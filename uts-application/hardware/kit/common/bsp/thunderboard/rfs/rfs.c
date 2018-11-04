@@ -135,7 +135,7 @@ uint8_t *RFS_getFileName(RFS_FileHandle *fileHandle)
  ******************************************************************************/
 int16_t RFS_getFileIndex(uint8_t name[])
 {
-  int i;
+  uint32_t i;
   int ret;
 
   ret = -1;
@@ -238,7 +238,7 @@ int32_t RFS_fileSeek(RFS_FileHandle *fileHandle, int32_t offset, uint32_t whence
  ******************************************************************************/
 int32_t RFS_fileRead(uint8_t *buf, uint32_t size, uint32_t nmemb, RFS_FileHandle *fileHandle)
 {
-  int32_t i;
+  uint32_t i;
   int32_t fileIndex = -1;
   uint32_t byteIndex;
   uint32_t totalByteCount;
@@ -252,7 +252,7 @@ int32_t RFS_fileRead(uint8_t *buf, uint32_t size, uint32_t nmemb, RFS_FileHandle
     return fileIndex;
   }
 
-  if ( fileIndex >= RFS_getFileCount() ) {
+  if ( fileIndex >= (int32_t)RFS_getFileCount() ) {
     return -1;
   }
 
@@ -304,7 +304,7 @@ uint8_t *RFS_fileGetRawData(RFS_FileHandle *fileHandle)
   if ( fileIndex < 0 ) {
     return 0;
   }
-  if ( fileIndex >= RFS_getFileCount() ) {
+  if ( fileIndex >= (int32_t)RFS_getFileCount() ) {
     return 0;
   }
 

@@ -171,6 +171,7 @@ void RADIO_bleStackLoopIteration(void)
 
 void advertisingIteration(uint32_t loopCount)
 {
+#ifndef DEBUG
   uint32_t sleepTimeout;
   static uint32_t previousAdvLC = 0;
   static uint32_t advStartedLC = 0;
@@ -181,6 +182,7 @@ void advertisingIteration(uint32_t loopCount)
   previousAdvLC = loopCount;
 
   sleepTimeout = APP_ADV_SLEEP_TIMEOUT_ITERATIONS;
+#endif
 
   advBlink();
 
