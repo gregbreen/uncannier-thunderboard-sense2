@@ -28,6 +28,9 @@
 #include "power.h"
 #include "hallservice.h"
 
+/* uncannier services */
+#include "ota_service.h"
+
 #include "app_ble_adv.h"
 #include "app_callback.h"
 
@@ -75,6 +78,7 @@ AppCfgGattServerUserWriteRequest_t appCfgGattServerUserWriteRequest[] =
   { gattdb_aio_digital_out, aioDigitalOutWrite },
   { gattdb_imu_control_point, imuControlPointWrite },
   { gattdb_hall_control_point, hallServiceControlPointWrite },
+  { gattdb_ota_control, otaServiceControlWrite },
   { 0, NULL }
 };
 
@@ -171,6 +175,8 @@ void appBleInit(void)
 
   appBleAdvStart();
 
+  otaServiceInit();
+
   return;
 }
 
@@ -190,6 +196,8 @@ if (psResp->result) {
 
 void appCfgConnectionClosedEvent(uint8_t connection, uint16_t reason)
 {
+  otaServiceConnectionClosed();
+
   conConnectionClosed();
   advInit();
   appBleAdvStart();

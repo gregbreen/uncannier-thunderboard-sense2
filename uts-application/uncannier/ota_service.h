@@ -1,0 +1,20 @@
+///-----------------------------------------------------------------------------
+///
+/// @file ota_service.h
+///
+/// @brief OTA DFU service
+///
+/// @copyright Copyright (c) Uncannier Software 2018
+///
+///-----------------------------------------------------------------------------
+
+#ifndef UNCANNIER_OTA_SERVICE_H_
+#define UNCANNIER_OTA_SERVICE_H_
+
+#include "bg_types.h"
+
+void otaServiceInit( void );
+void otaServiceConnectionClosed( void );
+void otaServiceControlWrite( uint8array *writeValue );
+
+#endif // UNCANNIER_OTA_SERVICE_H_

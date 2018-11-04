@@ -1,0 +1,11 @@
+CMSIS
+core
+crc
+crypto
+emlib
+internal_flash
+mbedtls
+parser
+storage-common
+token-management
+/Release/
