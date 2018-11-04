@@ -126,7 +126,7 @@ static float measureSupplyVoltage(unsigned int avg)
 {
   uint16_t adcData;
   float supplyVoltage;
-  int i;
+  unsigned int i;
 
   adcInit();
 

@@ -398,7 +398,7 @@ uint32_t SI7210_regReadOTP(uint8_t otpAddr, uint8_t *otpData)
  *****************************************************************************/
 static uint32_t SI7210_loadCoeffsFromOtp(uint8_t otpAddr)
 {
-  int i;
+  uint32_t i;
   uint32_t status;
   uint8_t value;
 

@@ -2807,11 +2807,6 @@ static inline struct gecko_msg_dfu_flash_upload_rsp_t* gecko_cmd_dfu_flash_uploa
 {
     struct gecko_cmd_packet *gecko_cmd_msg = (struct gecko_cmd_packet *)gecko_cmd_msg_buf;
     struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
-    if ((uint16_t)data_len > 256 - 1)
-    {
-        gecko_rsp_msg->data.rsp_dfu_flash_upload.result = bg_err_command_too_long;
-        return &gecko_rsp_msg->data.rsp_dfu_flash_upload;
-    }
 
     
     gecko_cmd_msg->data.cmd_dfu_flash_upload.data.len=data_len;
@@ -4079,11 +4074,6 @@ static inline struct gecko_msg_le_gap_set_data_channel_classification_rsp_t* gec
 {
     struct gecko_cmd_packet *gecko_cmd_msg = (struct gecko_cmd_packet *)gecko_cmd_msg_buf;
     struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
-    if ((uint16_t)channel_map_len > 256 - 1)
-    {
-        gecko_rsp_msg->data.rsp_le_gap_set_data_channel_classification.result = bg_err_command_too_long;
-        return &gecko_rsp_msg->data.rsp_le_gap_set_data_channel_classification;
-    }
 
     
     gecko_cmd_msg->data.cmd_le_gap_set_data_channel_classification.channel_map.len=channel_map_len;
@@ -6047,11 +6037,6 @@ static inline struct gecko_msg_sm_set_oob_data_rsp_t* gecko_cmd_sm_set_oob_data(
 {
     struct gecko_cmd_packet *gecko_cmd_msg = (struct gecko_cmd_packet *)gecko_cmd_msg_buf;
     struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
-    if ((uint16_t)oob_data_len > 256 - 1)
-    {
-        gecko_rsp_msg->data.rsp_sm_set_oob_data.result = bg_err_command_too_long;
-        return &gecko_rsp_msg->data.rsp_sm_set_oob_data;
-    }
 
     
     gecko_cmd_msg->data.cmd_sm_set_oob_data.oob_data.len=oob_data_len;
@@ -6201,11 +6186,6 @@ static inline struct gecko_msg_sm_set_sc_remote_oob_data_rsp_t* gecko_cmd_sm_set
 {
     struct gecko_cmd_packet *gecko_cmd_msg = (struct gecko_cmd_packet *)gecko_cmd_msg_buf;
     struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
-    if ((uint16_t)oob_data_len > 256 - 1)
-    {
-        gecko_rsp_msg->data.rsp_sm_set_sc_remote_oob_data.result = bg_err_command_too_long;
-        return &gecko_rsp_msg->data.rsp_sm_set_sc_remote_oob_data;
-    }
 
     
     gecko_cmd_msg->data.cmd_sm_set_sc_remote_oob_data.oob_data.len=oob_data_len;
