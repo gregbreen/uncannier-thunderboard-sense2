@@ -436,6 +436,9 @@ static void mainEfr32StackInitCallback(void)
   config.bluetooth.max_connections = MAX_CONNECTIONS;
   config.bluetooth.heap = bluetooth_stack_heap;
   config.bluetooth.heap_size = sizeof(bluetooth_stack_heap);
+  config.ota.flags = 0;
+  config.ota.device_name_len = 3;
+  config.ota.device_name_ptr = "OTA";
 
   gecko_init(&config);
 

@@ -131,6 +131,14 @@ appPlugin: stack_bridge=false
       <properties const="false" const_requirement="optional" indicate="true" indicate_requirement="optional" write="true" write_requirement="optional"/>
     </characteristic>
   </service>
+  <service advertise="false" id="ota" name="Silicon Labs OTA" requirement="mandatory" sourceId="com.silabs.service.ota" type="primary" uuid="1D14D6EE-FD63-4FA1-BFA4-8F47B42119F0">
+    <informativeText>Abstract: The Silicon Labs OTA Service enables over-the-air firmware update of the device. </informativeText>
+    <characteristic id="ota_control" name="Silicon Labs OTA Control" sourceId="com.silabs.characteristic.ota_control" uuid="F7BF3564-FB6D-4E53-88A4-5E37E0326063">
+      <informativeText>Abstract: Silicon Labs OTA Control. </informativeText>
+      <value length="1" type="user" variable_length="false"/>
+      <properties indicate="false" indicate_requirement="excluded" notify="false" notify_requirement="excluded" read="false" read_requirement="excluded" reliable_write="false" reliable_write_requirement="excluded" write="true" write_no_response="false" write_no_response_requirement="excluded" write_requirement="mandatory"/>
+    </characteristic>
+  </service>
   <service advertise="false" name="Power Source" requirement="mandatory" type="primary" uuid="ec61a454-ed00-a5e8-b8f9-de9ec026ec51">
     <informativeText/>
     <characteristic id="power_source_type" name="Power Source" uuid="ec61a454-ed01-a5e8-b8f9-de9ec026ec51">
