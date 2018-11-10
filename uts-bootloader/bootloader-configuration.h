@@ -18,6 +18,10 @@
 // Use this macro to check if Bootloader Core plugin is included
 #define EMBER_AF_PLUGIN_CORE
 // User options for plugin Bootloader Core
+#define BOOTLOADER_ENFORCE_SIGNED_UPGRADE
+#define BOOTLOADER_ENFORCE_ENCRYPTED_UPGRADE
+#define BOOTLOADER_ENFORCE_SECURE_BOOT
+#define BOOTLOADER_WRITE_DISABLE
 
 // Use this macro to check if Cyclic Redundancy Check plugin is included
 #define EMBER_AF_PLUGIN_CRC

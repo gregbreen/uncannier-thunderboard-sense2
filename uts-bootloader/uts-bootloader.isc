@@ -76,3 +76,7 @@ See UG266: Gecko Bootloader User's Guide to learn more about how to configure th
 
 # Plugin options
 pluginOption(efr32): BTL_STORAGE_BASE_ADDRESS,540672
+pluginOption(efr32~family[M]~series[1]~device_configuration[2]~performance[P]~radio[332]~flash[1024K]~temp[G]~package[L]~pins[125]~!module+BRD4166A+gcc): BOOTLOADER_ENFORCE_SIGNED_UPGRADE,true
+pluginOption(efr32~family[M]~series[1]~device_configuration[2]~performance[P]~radio[332]~flash[1024K]~temp[G]~package[L]~pins[125]~!module+BRD4166A+gcc): BOOTLOADER_ENFORCE_ENCRYPTED_UPGRADE,true
+pluginOption(efr32~family[M]~series[1]~device_configuration[2]~performance[P]~radio[332]~flash[1024K]~temp[G]~package[L]~pins[125]~!module+BRD4166A+gcc): BOOTLOADER_ENFORCE_SECURE_BOOT,true
+pluginOption(efr32~family[M]~series[1]~device_configuration[2]~performance[P]~radio[332]~flash[1024K]~temp[G]~package[L]~pins[125]~!module+BRD4166A+gcc): BOOTLOADER_WRITE_DISABLE,true
