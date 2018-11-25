@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: gregbreen/uncannier-thunderboard
+    steps:
+      - checkout
+      - run:
+          name: Build the Uncannier Thunderboard Sense 2 bootloader
+          command: /opt/SimplicityStudio_v4/studio -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild --launcher.suppressErrors -import uts-bootloader -cleanBuild uts-bootloader/Release
+      - run:
+          name: Build the Uncannier Thunderboard Sense 2 application
+          command: /opt/SimplicityStudio_v4/studio -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild --launcher.suppressErrors -import uts-application -cleanBuild uts-application/Release
+      - run:
+          name: Package the build artifacts
+          command: |
+            cd uts-application/Release
+            mv uts-image.hex uts-image-$CIRCLE_BUILD_NUM.hex
+            mv uts-application.gbl uts-application-$CIRCLE_BUILD_NUM.gbl
+            mv uts-apploader.gbl uts-apploader-$CIRCLE_BUILD_NUM.gbl
+            tar -cvzf uncannier-thunderboard-sense2.tar.gz uts-image-$CIRCLE_BUILD_NUM.hex uts-application-$CIRCLE_BUILD_NUM.gbl uts-apploader-$CIRCLE_BUILD_NUM.gbl
+      - store_artifacts:
+          path: ./uts-application/Release/uncannier-thunderboard-sense2.tar.gz
+          destination: uncannier-thunderboard-sense2.tar.gz
+
