@@ -13,8 +13,16 @@
 
 #include "bg_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void otaServiceInit( void );
 void otaServiceConnectionClosed( void );
 void otaServiceControlWrite( uint8array *writeValue );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // UNCANNIER_OTA_SERVICE_H_
