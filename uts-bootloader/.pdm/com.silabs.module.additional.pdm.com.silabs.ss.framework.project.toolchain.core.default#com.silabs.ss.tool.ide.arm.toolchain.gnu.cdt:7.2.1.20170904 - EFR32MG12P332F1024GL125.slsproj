@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="com.silabs.module.additional.pdm.com.silabs.ss.framework.project.toolchain.core.default#com.silabs.ss.tool.ide.arm.toolchain.gnu.cdt:7.2.1.20170904" partCompatibility=".*" toolchainCompatibility="com.silabs.ide.si32.iar com.silabs.ide.si32.gcc" sdkCompatibility="" propertyScope="project" contentRoot=".">
+<project name="com.silabs.module.additional.pdm.com.silabs.ss.framework.project.toolchain.core.default#com.silabs.ss.tool.ide.arm.toolchain.gnu.cdt:7.2.1.20170904 - EFR32MG12P332F1024GL125" partCompatibility=".*" toolchainCompatibility="com.silabs.ide.si32.iar com.silabs.ide.si32.gcc" sdkCompatibility="" propertyScope="project" contentRoot=".">
   <folder name="CMSIS" partCompatibility=".*">
     <file name="system_efr32mg12p.c" partCompatibility=".*" uri="studio:/sdk/platform/Device/SiliconLabs/EFR32MG12P/Source/system_efr32mg12p.c"/>
   </folder>
@@ -17,11 +17,11 @@
   <includePath uri="studio:/project/hal-config"/>
   <includePath partCompatibility=".*" languageCompatibility="c asm" uri="studio:/sdk/platform/Device/SiliconLabs/EFR32MG12P/Include/"/>
   <includePath uri="studio:/sdk/platform/bootloader/"/>
-  <includePath uri="studio:/sdk/platform/emlib/inc"/>
   <includePath uri="studio:/sdk/util/third_party/mbedtls/include"/>
   <includePath uri="studio:/sdk/util/third_party/mbedtls/configs"/>
   <includePath uri="studio:/sdk/util/third_party/mbedtls/sl_crypto/include"/>
   <includePath uri="studio:/sdk/platform/emdrv/common/inc"/>
+  <includePath uri="studio:/sdk/platform/emlib/inc"/>
   <macroDefinition name="EFR32MG12P332F1024GL125"/>
   <macroDefinition partCompatibility=".*" languageCompatibility="c asm" name="EFR32MG12P332F1024GL125" value="1"/>
   <macroDefinition name="BTL_CONFIG_FILE" value="&quot;bootloader-configuration.h&quot;"/>

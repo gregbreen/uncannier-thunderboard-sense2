@@ -36,6 +36,11 @@
 			<locationURI>STUDIO_SDK_LOC/platform/bootloader/core/btl_core.c</locationURI>
 		</link>
 		<link>
+			<name>core/btl_driver_util.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/bootloader/driver/btl_driver_util.c</locationURI>
+		</link>
+		<link>
 			<name>core/btl_main.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/bootloader/core/btl_main.c</locationURI>

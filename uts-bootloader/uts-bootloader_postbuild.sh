@@ -31,4 +31,4 @@ FILENAME=$1
 echo " "
 echo "Add first stage bootloader to image (${FILENAME}-combined.s37)"
 echo " "
-"${COMMANDER}" convert "/opt/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.4/platform/bootloader/build/first_stage/gcc/first_stage_btl_efx32xg12.s37" "${FILENAME}.s37" -o "${FILENAME}-combined.s37"
+"${COMMANDER}" convert "/opt/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.5/platform/bootloader/build/first_stage/gcc/first_stage_btl_efx32xg12.s37" "${FILENAME}.s37" -o "${FILENAME}-combined.s37"
