@@ -20,7 +20,12 @@ void *gecko_rsp_msg_buf = &rsp_msg_buf;
 
 static struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
 
-void gecko_init( const gecko_configuration_t *config )
+errorcode_t gecko_init( const gecko_configuration_t *config )
+{
+    return bg_err_success;
+}
+
+void gecko_external_signal( uint32 signals )
 {
 }
 
@@ -31,11 +36,11 @@ void* gecko_cmd_system_reset( uint8 dfu )
     return 0;
 }
 
-struct gecko_msg_endpoint_close_rsp_t* gecko_cmd_endpoint_close( uint8 endpoint )
+struct gecko_msg_le_connection_close_rsp_t* gecko_cmd_le_connection_close( uint8 connection )
 {
-    mock().actualCall( "gecko_cmd_endpoint_close()" ).withParameter( "endpoint", endpoint );
+    mock().actualCall( "gecko_cmd_le_connection_close()" ).withParameter( "connection", connection );
 
-    return &gecko_rsp_msg->data.rsp_endpoint_close;
+    return &gecko_rsp_msg->data.rsp_le_connection_close;
 }
 
 struct gecko_msg_gatt_server_send_user_write_response_rsp_t* gecko_cmd_gatt_server_send_user_write_response( uint8 connection, uint16 characteristic,
@@ -99,4 +104,20 @@ struct gecko_msg_sm_set_bondable_mode_rsp_t* gecko_cmd_sm_set_bondable_mode( uin
 struct gecko_msg_system_get_bt_address_rsp_t* gecko_cmd_system_get_bt_address()
 {
     return &gecko_rsp_msg->data.rsp_system_get_bt_address;
+}
+
+struct gecko_msg_le_connection_set_parameters_rsp_t* gecko_cmd_le_connection_set_parameters( uint8 connection, uint16 min_interval,
+                                                                                             uint16 max_interval, uint16 latency, uint16 timeout )
+{
+    return &gecko_rsp_msg->data.rsp_le_connection_set_parameters;
+}
+
+struct gecko_msg_flash_ps_save_rsp_t* gecko_cmd_flash_ps_save( uint16 key, uint8 value_len, const uint8* value_data )
+{
+    return &gecko_rsp_msg->data.rsp_flash_ps_save;
+}
+
+struct gecko_msg_flash_ps_load_rsp_t* gecko_cmd_flash_ps_load( uint16 key )
+{
+    return &gecko_rsp_msg->data.rsp_flash_ps_load;
 }

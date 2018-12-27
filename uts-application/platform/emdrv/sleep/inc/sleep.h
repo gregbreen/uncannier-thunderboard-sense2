@@ -1,34 +1,19 @@
 /***************************************************************************//**
- * @file sleep.h
+ * @file
  * @brief Energy Modes management driver
- * @version 5.6.0
- * @details
- * This is a energy modes management module consisting of sleep.c and sleep.h
- * source files. The main purpose of the module is to ease energy
- * optimization with a simple API. The module allows the system to always sleep
- * in the lowest possible energy mode. Users could set up callbacks that are
- * being called before and after each and every sleep. A counting semaphore is
- * available for each low energy mode (EM2/EM3) to protect certain system
- * states from being corrupted. This semaphore has limit set to maximum 255 locks.
- *
- * The module provides the following public API to the users:
- * SLEEP_Init()
- * SLEEP_Sleep()
- * SLEEP_SleepBlockBegin()
- * SLEEP_SleepBlockEnd()
- * SLEEP_ForceSleepInEM4()
- *
  *******************************************************************************
  * # License
- * <b>Copyright 2016 Silicon Laboratories, Inc. www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * This file is licensed under the Silabs License Agreement. See the file
- * "Silabs_License_Agreement.txt" for details. Before using this software for
- * any purpose, you must agree to the terms of that agreement.
+ * The licensor of this software is Silicon Laboratories Inc.  Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement.  This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
-
 #ifndef SLEEP_H
 #define SLEEP_H
 
@@ -50,7 +35,7 @@ extern "C" {
 /***************************************************************************//**
  * @addtogroup SLEEP
  * @brief
- *   Sleep management driver.
+ *   Sleep Management Driver.
  *
  * @details
  *

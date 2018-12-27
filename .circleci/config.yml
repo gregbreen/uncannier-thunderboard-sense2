@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: gregbreen/uncannier-thunderboard:gecko-sdk-suite-v2.4
+      - image: gregbreen/uncannier-thunderboard:gecko-sdk-suite-v2.5
     steps:
       - checkout
       - run:

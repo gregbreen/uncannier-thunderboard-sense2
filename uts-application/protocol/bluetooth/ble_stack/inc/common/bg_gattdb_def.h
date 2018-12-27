@@ -1,6 +1,19 @@
-/**
- * Gatt database struct definitions for simple api
- */
+/***************************************************************************//**
+ * @brief Bluetooth GATT database structure definition
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
 #ifndef GATT_DEF_H
 #define GATT_DEF_H
 
@@ -31,7 +44,10 @@ enum gatt_att_perm{
   gatt_att_perm_encrypted_write         = 0x0100,
   gatt_att_perm_authenticated_write     = 0x0200,
   gatt_att_perm_bonded_write            = 0x0400,
-  gatt_att_perm_discoverable            = 0x0800
+  gatt_att_perm_discoverable            = 0x0800,
+  gatt_att_perm_encrypted_notify        = 0x1000,
+  gatt_att_perm_authenticated_notify    = 0x2000,
+  gatt_att_perm_bonded_notify           = 0x4000,
 };
 
 /* Characteristic properties */

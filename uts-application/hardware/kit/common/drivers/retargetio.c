@@ -1,25 +1,28 @@
 /***************************************************************************//**
  * @file
  * @brief Provide stdio retargeting for all supported toolchains.
- * @version 5.6.0
  *******************************************************************************
  * # License
- * <b>Copyright 2015 Silicon Labs, Inc. http://www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * This file is licensed under the Silabs License Agreement. See the file
- * "Silabs_License_Agreement.txt" for details. Before using this software for
- * any purpose, you must agree to the terms of that agreement.
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
 
 /***************************************************************************//**
+ * @addtogroup kitdrv
+ * @{
+ ******************************************************************************/
+
+/***************************************************************************//**
  * @addtogroup RetargetIo
- * @{ This module provide low-level stubs for retargetting stdio for all
- *    supported toolchains.
- *    The stubs are minimal yet sufficient implementations.
- *    Refer to chapter 12 in the reference manual for newlib 1.17.0
- *    for details on implementing newlib stubs.
+ * @{
  ******************************************************************************/
 
 extern int RETARGET_ReadChar(void);
@@ -376,7 +379,7 @@ int __getchar(void)
 
 #if defined(__CC_ARM)
 /******************************************************************************/
-/* RETARGET.C: 'Retarget' layer for target-dependent low level functions      */
+/* RETARGET.C: 'Retarget' layer for target-dependent low-level functions      */
 /******************************************************************************/
 /* This file is part of the uVision/ARM development tools.                    */
 /* Copyright (c) 2005-2006 Keil Software. All rights reserved.                */
@@ -451,7 +454,7 @@ int ferror(FILE *f)
  *  Writes a character to the console
  *
  * @param[in] ch
- *  Character
+ *  Input character
  *****************************************************************************/
 void _ttywrch(int ch)
 {
@@ -473,3 +476,4 @@ void _sys_exit(int return_code)
 #endif /* defined( __CC_ARM ) */
 
 /** @} (end group RetargetIo) */
+/** @} (end group kitdrv) */

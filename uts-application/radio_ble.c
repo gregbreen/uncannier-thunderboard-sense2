@@ -1,3 +1,20 @@
+/***************************************************************************//**
+ * @file
+ * @brief radio_ble.c
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -436,6 +453,8 @@ static void mainEfr32StackInitCallback(void)
   config.bluetooth.max_connections = MAX_CONNECTIONS;
   config.bluetooth.heap = bluetooth_stack_heap;
   config.bluetooth.heap_size = sizeof(bluetooth_stack_heap);
+  config.pa.config_enable = 1; // Set this to be a valid PA config
+  config.pa.input = GECKO_RADIO_PA_INPUT_DCDC;
   config.ota.flags = 0;
   config.ota.device_name_len = 3;
   config.ota.device_name_ptr = "OTA";

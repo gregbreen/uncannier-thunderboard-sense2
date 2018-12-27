@@ -1,33 +1,32 @@
 /***************************************************************************//**
- * @file em_usart.c
+ * @file
  * @brief Universal synchronous/asynchronous receiver/transmitter (USART/UART)
  *   Peripheral API
- * @version 5.6.0
+ * @version 5.7.0
  *******************************************************************************
  * # License
- * <b>Copyright 2016 Silicon Laboratories, Inc. www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
  *
  * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
  *
  * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software.
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
  * 2. Altered source versions must be plainly marked as such, and must not be
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
- *
- * DISCLAIMER OF WARRANTY/LIMITATION OF REMEDIES: Silicon Labs has no
- * obligation to support this Software. Silicon Labs is providing the
- * Software "AS IS", with no express or implied warranties of any kind,
- * including, but not limited to, any implied warranties of merchantability
- * or fitness for any particular purpose or warranties against infringement
- * of any proprietary rights of a third party.
- *
- * Silicon Labs will not be liable for any consequential, incidental, or
- * special damages, or any other relief, or for any claim by any third party,
- * arising from your use of this Software.
  *
  ******************************************************************************/
 
@@ -318,12 +317,20 @@ void USART_BaudrateAsyncSet(USART_TypeDef *usart,
    * up to 1 GHz without overflowing a 32 bit value.
    */
 
-  /* HFPERCLK used to clock all USART/UART peripheral modules. */
+  /* HFPERCLK/HFPERBCLK used to clock all USART/UART peripheral modules. */
   if (!refFreq) {
 #if defined(_SILICON_LABS_32B_SERIES_2)
     refFreq = CMU_ClockFreqGet(cmuClock_PCLK);
 #else
+#if defined(_CMU_HFPERPRESCB_MASK)
+    if (usart == USART2) {
+      refFreq = CMU_ClockFreqGet(cmuClock_HFPERB);
+    } else {
+      refFreq = CMU_ClockFreqGet(cmuClock_HFPER);
+    }
+#else
     refFreq = CMU_ClockFreqGet(cmuClock_HFPER);
+#endif
 #endif
   }
 
@@ -554,11 +561,19 @@ uint32_t USART_BaudrateGet(USART_TypeDef *usart)
     syncmode = false;
   }
 
-  /* HFPERCLK used to clock all USART/UART peripheral modules. */
+  /* HFPERCLK/HFPERBCLK used to clock all USART/UART peripheral modules. */
 #if defined(_SILICON_LABS_32B_SERIES_2)
   freq = CMU_ClockFreqGet(cmuClock_PCLK);
 #else
+#if defined(_CMU_HFPERPRESCB_MASK)
+  if (usart == USART2) {
+    freq = CMU_ClockFreqGet(cmuClock_HFPERB);
+  } else {
+    freq = CMU_ClockFreqGet(cmuClock_HFPER);
+  }
+#else
   freq = CMU_ClockFreqGet(cmuClock_HFPER);
+#endif
 #endif
   ovs  = (USART_OVS_TypeDef)(usart->CTRL & _USART_CTRL_OVS_MASK);
   return USART_BaudrateCalc(freq, usart->CLKDIV, syncmode, ovs);
@@ -604,12 +619,20 @@ void USART_BaudrateSyncSet(USART_TypeDef *usart, uint32_t refFreq, uint32_t baud
    * CLKDIV = 256 * (fHFPERCLK/(2 * br) - 1)
    */
 
-  /* HFPERCLK used to clock all USART/UART peripheral modules. */
+  /* HFPERCLK/HFPERBCLK used to clock all USART/UART peripheral modules. */
   if (!refFreq) {
 #if defined(_SILICON_LABS_32B_SERIES_2)
     refFreq = CMU_ClockFreqGet(cmuClock_PCLK);
 #else
+#if defined(_CMU_HFPERPRESCB_MASK)
+    if (usart == USART2) {
+      refFreq = CMU_ClockFreqGet(cmuClock_HFPERB);
+    } else {
+      refFreq = CMU_ClockFreqGet(cmuClock_HFPER);
+    }
+#else
     refFreq = CMU_ClockFreqGet(cmuClock_HFPER);
+#endif
 #endif
   }
 

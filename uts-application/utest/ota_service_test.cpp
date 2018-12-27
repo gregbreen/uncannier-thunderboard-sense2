@@ -38,7 +38,7 @@ TEST( ota_service, HandleServiceControlWrite )
             .withParameter( "connection", conGetConnectionId() )
             .withParameter( "characteristic", gattdb_ota_control )
             .withParameter( "att_errorcode", bg_err_success );
-    mock().expectOneCall( "gecko_cmd_endpoint_close()" ).withParameter( "endpoint", conGetConnectionId() );
+    mock().expectOneCall( "gecko_cmd_le_connection_close()" ).withParameter( "connection", conGetConnectionId() );
 
     otaServiceControlWrite( NULL );
 }

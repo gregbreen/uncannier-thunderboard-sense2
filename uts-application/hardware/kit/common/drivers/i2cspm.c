@@ -1,15 +1,17 @@
 /***************************************************************************//**
  * @file
  * @brief I2C simple poll-based master mode driver for the DK/STK.
- * @version 5.6.0
  *******************************************************************************
  * # License
- * <b>Copyright 2015 Silicon Labs, Inc. http://www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * This file is licensed under the Silabs License Agreement. See the file
- * "Silabs_License_Agreement.txt" for details. Before using this software for
- * any purpose, you must agree to the terms of that agreement.
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
 
@@ -24,8 +26,19 @@
 #include "i2cspm.h"
 #include "em_assert.h"
 
-/*******************************************************************************
- **************************   GLOBAL FUNCTIONS   *******************************
+/***************************************************************************//**
+ * @addtogroup kitdrv
+ * @{
+ ******************************************************************************/
+
+/***************************************************************************//**
+ * @addtogroup I2CSPM
+ * @brief I2C Simple Polled Master driver
+ *
+ * @details
+ *   This driver supports master mode, single bus-master only. It blocks
+ *   while waiting for the transfer is complete, polling for completion in EM0.
+ * @{
  ******************************************************************************/
 
 /***************************************************************************//**
@@ -139,10 +152,6 @@ void I2CSPM_Init(I2CSPM_Init_TypeDef *init)
  * @brief
  *   Perform I2C transfer
  *
- * @details
- *   This driver only supports master mode, single bus-master. It does not
- *   return until the transfer is complete, polling for completion.
- *
  * @param[in] i2c
  *   Pointer to the peripheral port
  *
@@ -161,3 +170,6 @@ I2C_TransferReturn_TypeDef I2CSPM_Transfer(I2C_TypeDef *i2c, I2C_TransferSeq_Typ
   }
   return ret;
 }
+
+/** @} (end group I2CSPM) */
+/** @} (end addtogroup kitdrv) */

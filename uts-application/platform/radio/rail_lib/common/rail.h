@@ -1,9 +1,20 @@
-/**************************************************************************//**
- * @file rail.h
+/***************************************************************************//**
+ * @file
  * @brief The main header file for the RAIL library. It describes the external
- *        APIs available to a RAIL user
- * @copyright Copyright 2015 Silicon Laboratories, Inc. www.silabs.com
- *****************************************************************************/
+ *   APIs available to a RAIL user
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
 
 #ifndef __RAIL_H__
 #define __RAIL_H__
@@ -76,6 +87,36 @@ void RAIL_GetVersion(RAIL_Version_t *version, bool verbose);
  */
 RAIL_Handle_t RAIL_Init(RAIL_Config_t *railCfg,
                         RAIL_InitCompleteCallbackPtr_t cb);
+
+/**
+ * Get RAIL Initialization status.
+ *
+ * @return True if the radio has finished initializing and
+ *   false otherwise.
+ *
+ * RAIL APIs, for e.g. RAIL_GetTime(), which work only if RAIL_Init() has been called,
+ * can use RAIL_IsInitialized() to determine whether RAIL has been initialized or not.
+ */
+bool RAIL_IsInitialized(void);
+
+/**
+ * Blocking delay routine for specified number of microseconds.
+ *
+ * @param[in] microseconds Delay duration in microseconds.
+ * @return Status code indicating success of the function call.
+ *
+ * This RAIL API should only be used for short blocking delays, as it has less overhead
+ * than calling RAIL_GetTime() in a loop.
+ * @note
+ * Passing large delay values may give unpredictable results or trigger
+ * the Watchdog Reset.
+ * \n Also, this function will start the clocks required for the RAIL timebase if they
+ * are not running, except in the case between \ref RAIL_Sleep() and \ref RAIL_Wake()
+ * where the timer must remain stopped.
+ * \n Interrupts are not disabled during the delay, so the delay may be longer if an
+ * interrupt extends beyond the delay duration.
+ */
+RAIL_Status_t RAIL_DelayUs(RAIL_Time_t microseconds);
 
 /**
  * Collects entropy from the radio if available.
@@ -203,6 +244,15 @@ RAIL_Status_t RAIL_SetPtiProtocol(RAIL_Handle_t railHandle,
  * @param[in] config A configuration structure applied to the relevant Antenna
  *   Configuration registers. A NULL config will produce undefined behavior.
  * @return Status code indicating success of the function call.
+ *
+ * This function tells RAIL how to select each antenna, but not when.
+ * Antenna selection for receive is controlled by the
+ * \ref RAIL_RxOptions_t::RAIL_RX_OPTION_ANTENNA0 and
+ * \ref RAIL_RxOptions_t::RAIL_RX_OPTION_ANTENNA1 options
+ * (and the \ref RAIL_RxOptions_t::RAIL_RX_OPTION_ANTENNA_AUTO combination).
+ * Antenna selection for transmit is controlled by the
+ * \ref RAIL_TxOptions_t::RAIL_TX_OPTION_ANTENNA0 and
+ * \ref RAIL_TxOptions_t::RAIL_TX_OPTION_ANTENNA1 options.
  *
  * Although a RAIL handle is included for potential future
  * expansion of this function, it is currently not used. That is,
@@ -1198,7 +1248,7 @@ uint16_t RAIL_ReadRxFifo(RAIL_Handle_t railHandle,
  * \ref RAIL_Config_t::eventsCallback will fire with \ref
  * RAIL_EVENT_TX_FIFO_ALMOST_EMPTY set.
  * The txThreshold value should be smaller than or equal to the transmit
- * FIFO size, otherwise the event will never fire.
+ * FIFO size; higher values will be pegged to the FIFO size.
  * A value of 0 or \ref RAIL_FIFO_THRESHOLD_DISABLED will disable the
  * threshold, returning \ref RAIL_FIFO_THRESHOLD_DISABLED.
  */
@@ -1217,10 +1267,9 @@ uint16_t RAIL_SetTxFifoThreshold(RAIL_Handle_t railHandle,
  * number of bytes of packet data in the receive FIFO exceeds the configured
  * threshold, \ref RAIL_Config_t::eventsCallback will fire with \ref
  * RAIL_EVENT_RX_FIFO_ALMOST_FULL set.
- * The rxThreshold value should be smaller than the receive FIFO size; if it
- * is set higher, it will be configured so that the event fires when the
- * receive FIFO is one byte away from being full.
- * A value of \ref RAIL_FIFO_THRESHOLD_DISABLED will disable the threshold,
+ * The rxThreshold value should be smaller than the receive FIFO size;
+ * anything else, including a
+ * value of \ref RAIL_FIFO_THRESHOLD_DISABLED, will disable the threshold,
  * returning \ref RAIL_FIFO_THRESHOLD_DISABLED.
  */
 uint16_t RAIL_SetRxFifoThreshold(RAIL_Handle_t railHandle,
@@ -1376,10 +1425,12 @@ void RAIL_Idle(RAIL_Handle_t railHandle,
  * and \ref RAIL_RF_STATE_ACTIVE. \ref RAIL_RF_STATE_IDLE, \ref
  * RAIL_RF_STATE_RX, and \ref RAIL_RF_STATE_TX bits are mutually exclusive.
  * The radio can transition through intermediate states,
- * which are not reported but are instead bucketed into the state
- * being transitioned into. For example, when the transmitter is in the
- * process of shutting down, this function will return TX, as if the
- * shutdown process hadn't started yet.
+ * which are not reported but are instead considered part of the state
+ * most closely associated. For example, when the radio is warming up
+ * or shutting down the transmitter or receiver, this function returns
+ * \ref RAIL_RF_STATE_TX or \ref RAIL_RF_STATE_RX, respectively.
+ * When transitioning directly from Rx to Tx or vice-versa, this function
+ * returns the earlier state.
  */
 RAIL_RadioState_t RAIL_GetRadioState(RAIL_Handle_t railHandle);
 
@@ -1679,8 +1730,6 @@ struct RAIL_TxPowerCurvesConfigAlt;
 /// effect otherwise. Transmit will not work before this function is called.
 void RAIL_VerifyTxPowerCurves(const struct RAIL_TxPowerCurvesConfigAlt *config);
 
-/** @} */ // end of group PA
-
 /// Sets the TX power in terms of deci-dBm instead of raw power level.
 ///
 /// @param[in] railHandle A RAIL instance handle.
@@ -1734,6 +1783,8 @@ RAIL_Status_t RAIL_SetTxPowerDbm(RAIL_Handle_t railHandle,
 ///
 RAIL_TxPower_t RAIL_GetTxPowerDbm(RAIL_Handle_t railHandle);
 
+/** @} */ // end of group PA
+
 /**
  * Starts a non-blocking transmit.
  *
@@ -1772,7 +1823,7 @@ RAIL_Status_t RAIL_StartTx(RAIL_Handle_t railHandle,
  *   Returns \ref RAIL_STATUS_INVALID_STATE if the requested
  *                transmit mode cannot be stopped.
  *
- * @note This function will stop autoAcks in active transmit.
+ * @note This function will stop an auto-ACK in active transmit.
  */
 RAIL_Status_t RAIL_StopTx(RAIL_Handle_t railHandle, RAIL_StopMode_t mode);
 
@@ -2109,7 +2160,20 @@ RAIL_Status_t RAIL_ConfigRxOptions(RAIL_Handle_t railHandle,
                                    RAIL_RxOptions_t mask,
                                    RAIL_RxOptions_t options);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+/**
+ * Function to include the code necessary for frame type based length decoding.
+ *
+ * @param[in] railHandle A RAIL instance handle.
+ * @return void.
+ *
+ * This must be called before \ref RAIL_ConfigChannels to allow configurations
+ * using a frame type based length setup. In RAIL 2.x this is called by default
+ * in the \ref RAILCb_ConfigFrameTypeLength API which can be overridden to save
+ * code space. In future versions the user may be required to call this API
+ * explicitly.
+ */
+void RAIL_IncludeFrameTypeLength(RAIL_Handle_t railHandle);
+
 /**
  * Function implemented in the radio config for frame type length handling
  *
@@ -2125,7 +2189,6 @@ RAIL_Status_t RAIL_ConfigRxOptions(RAIL_Handle_t railHandle,
  */
 void RAILCb_ConfigFrameTypeLength(RAIL_Handle_t railHandle,
                                   const RAIL_FrameType_t *frameType);
-#endif
 
 /**
  * Starts the receiver on a specific channel.
@@ -2173,6 +2236,42 @@ RAIL_Status_t RAIL_ScheduleRx(RAIL_Handle_t railHandle,
                               uint16_t channel,
                               const RAIL_ScheduleRxConfig_t *cfg,
                               const RAIL_SchedulerInfo_t *schedulerInfo);
+
+/******************************************************************************
+ * Packet Infomation (RX)
+ *****************************************************************************/
+/// @addtogroup Packet_Information Packet Information
+/// @brief APIs to get information about received packets.
+///
+/// After receiving a packet, RAIL will trigger a
+/// \ref RAIL_EVENT_RX_PACKET_RECEIVED event. At that point, there is a variety
+/// of information available to the application about the received packet. The
+/// following example code assumes that the
+/// \ref RAIL_RX_OPTION_REMOVE_APPENDED_INFO is not used, and the application
+/// wants as much data about the packet as possible.
+///
+/// @code{.c}
+/// // Get all information about a received packet.
+/// RAIL_Status_t status;
+/// RAIL_RxPacketInfo_t rxInfo;
+/// RAIL_RxPacketDetails_t rxDetails;
+/// RAIL_RxPacketHandle_t rxHandle
+///   = RAIL_GetRxPacketInfo(railHandle, RAIL_RX_PACKET_HANDLE_NEWEST, &rxInfo);
+/// assert(rxHandle != RAIL_RX_PACKET_HANDLE_INVALID);
+/// status = RAIL_GetRxPacketDetailsAlt(railHandle, rxHandle, &rxDetails);
+/// assert(status == RAIL_STATUS_NO_ERROR);
+/// if (rxDetails.timeReceived.timePosition == RAIL_PACKET_TIME_INVALID) {
+///   return; // No timestamp available for this packet
+/// }
+/// // CRC_BYTES only needs to be added when not using RAIL_RX_OPTION_STORE_CRC
+/// rxDetails.timeReceived.totalPacketBytes = rxInfo.packetBytes + CRC_BYTES;
+/// // Choose the function which gives the desired timestamp
+/// status = RAIL_GetRxTimeFrameEndAlt(railHandle, &rxDetails);
+/// assert(status == RAIL_STATUS_NO_ERROR);
+/// // Now all fields of rxInfo and rxDetails have been populated correctly
+/// @endcode
+///
+/// @{
 
 /**
  * Gets basic information about a pending or received packet.
@@ -2331,11 +2430,34 @@ RAIL_Status_t RAIL_GetRxPacketDetailsAlt(RAIL_Handle_t railHandle,
  *   or an appropriate error code otherwise.
  *
  * This API must be called while the given railHandle is active, or it will
- * return an error code of \ref RAIL_STATUS_INVALID_STATE.
+ * return an error code of \ref RAIL_STATUS_INVALID_STATE. Note that this API
+ * may return incorrect timestamps when sub-phys are in use, as in the BLE Coded
+ * PHY. Prefer \ref RAIL_GetRxTimePreambleStartAlt in those situations.
  */
 RAIL_Status_t RAIL_GetRxTimePreambleStart(RAIL_Handle_t railHandle,
                                           uint16_t totalPacketBytes,
                                           RAIL_Time_t *pPacketTime);
+
+/**
+ * Adjust a RAIL RX timestamp to refer to the start of the preamble.
+ *
+ * @param[in] railHandle A RAIL instance handle.
+ * @param[in, out] pPacketDetails The non-NULL details that were returned from
+ *   a previous call to \ref RAIL_GetRxPacketDetailsAlt for this same packet.
+ *   The application must update the timeReceived field totalPacketBytes to be
+ *   the total number of bytes of the received packet for RAIL to use when
+ *   calculating the specified timestamp. This should account for all bytes
+ *   received over the air after the Preamble and Sync word(s), including CRC
+ *   bytes. After this function, the timeReceived field packetTime will be
+ *   updated with the time that the preamble for this packet started on air.
+ * @return \ref RAIL_STATUS_NO_ERROR if the packet time was successfully
+ *   calculated, or an appropriate error code otherwise.
+ *
+ * This API must be called while the given railHandle is active, or it will
+ * return an error code of \ref RAIL_STATUS_INVALID_STATE.
+ */
+RAIL_Status_t RAIL_GetRxTimePreambleStartAlt(RAIL_Handle_t railHandle,
+                                             RAIL_RxPacketDetails_t *pPacketDetails);
 
 /**
  * Adjust a RAIL RX timestamp to refer to the end of the sync word
@@ -2355,11 +2477,34 @@ RAIL_Status_t RAIL_GetRxTimePreambleStart(RAIL_Handle_t railHandle,
  *   or an appropriate error code otherwise.
  *
  * This API must be called while the given railHandle is active, or it will
- * return an error code of \ref RAIL_STATUS_INVALID_STATE.
+ * return an error code of \ref RAIL_STATUS_INVALID_STATE. Note that this API
+ * may return incorrect timestamps when sub-phys are in use, as in the BLE Coded
+ * PHY. Prefer \ref RAIL_GetRxTimeSyncWordEndAlt in those situations.
  */
 RAIL_Status_t RAIL_GetRxTimeSyncWordEnd(RAIL_Handle_t railHandle,
                                         uint16_t totalPacketBytes,
                                         RAIL_Time_t *pPacketTime);
+
+/**
+ * Adjust a RAIL RX timestamp to refer to the end of the sync word
+ *
+ * @param[in] railHandle A RAIL instance handle.
+ * @param[in, out] pPacketDetails The non-NULL details that were returned from
+ *   a previous call to \ref RAIL_GetRxPacketDetailsAlt for this same packet.
+ *   The application must update the timeReceived field totalPacketBytes to be
+ *   the total number of bytes of the received packet for RAIL to use when
+ *   calculating the specified timestamp. This should account for all bytes
+ *   received over the air after the Preamble and Sync word(s), including CRC
+ *   bytes. After this function, the timeReceived field packetTime will be
+ *   updated with the time that the sync word for this packet finished on air.
+ * @return \ref RAIL_STATUS_NO_ERROR if the packet time was successfully
+ *   calculated, or an appropriate error code otherwise.
+ *
+ * This API must be called while the given railHandle is active, or it will
+ * return an error code of \ref RAIL_STATUS_INVALID_STATE.
+ */
+RAIL_Status_t RAIL_GetRxTimeSyncWordEndAlt(RAIL_Handle_t railHandle,
+                                           RAIL_RxPacketDetails_t *pPacketDetails);
 
 /**
  * Adjust a RAIL RX timestamp to refer to the end of frame
@@ -2379,11 +2524,36 @@ RAIL_Status_t RAIL_GetRxTimeSyncWordEnd(RAIL_Handle_t railHandle,
  *   or an appropriate error code otherwise.
  *
  * This API must be called while the given railHandle is active, or it will
- * return an error code of \ref RAIL_STATUS_INVALID_STATE.
+ * return an error code of \ref RAIL_STATUS_INVALID_STATE. Note that this API
+ * may return incorrect timestamps when sub-phys are in use, as in the BLE Coded
+ * PHY. Prefer \ref RAIL_GetRxTimeFrameEndAlt in those situations.
  */
 RAIL_Status_t RAIL_GetRxTimeFrameEnd(RAIL_Handle_t railHandle,
                                      uint16_t totalPacketBytes,
                                      RAIL_Time_t *pPacketTime);
+
+/**
+ * Adjust a RAIL RX timestamp to refer to the end of frame
+ *
+ * @param[in] railHandle A RAIL instance handle.
+ * @param[in, out] pPacketDetails The non-NULL details that were returned from
+ *   a previous call to \ref RAIL_GetRxPacketDetailsAlt for this same packet.
+ *   The application must update the timeReceived field totalPacketBytes to be
+ *   the total number of bytes of the received packet for RAIL to use when
+ *   calculating the specified timestamp. This should account for all bytes
+ *   received over the air after the Preamble and Sync word(s), including CRC
+ *   bytes. After this function, the timeReceived field packetTime will be
+ *   updated with the time that the packet finished on air.
+ * @return \ref RAIL_STATUS_NO_ERROR if the packet time was successfully
+ *   calculated, or an appropriate error code otherwise.
+ *
+ * This API must be called while the given railHandle is active, or it will
+ * return an error code of \ref RAIL_STATUS_INVALID_STATE.
+ */
+RAIL_Status_t RAIL_GetRxTimeFrameEndAlt(RAIL_Handle_t railHandle,
+                                        RAIL_RxPacketDetails_t *pPacketDetails);
+
+/** @} */ // end of group Packet_Information
 
 /**
  * Place a temporary hold on this packet's data and information resources
@@ -2739,15 +2909,15 @@ RAIL_Status_t RAIL_EnableAddressFilterAddress(RAIL_Handle_t railHandle,
 /** @} */ // end of group Receive
 
 /******************************************************************************
- * Auto Acking
+ * Auto-ACKing
  *****************************************************************************/
-/// @addtogroup Auto_Ack Auto ACK
-/// @brief APIs for configuring auto ACK functionality
+/// @addtogroup Auto_Ack Auto-ACK
+/// @brief APIs for configuring auto-ACK functionality
 ///
-/// These APIs are used to configure the radio for auto acknowledgment
-/// features. Auto ACK inherently changes how the underlying state machine
+/// These APIs are used to configure the radio for automatic acknowledgment
+/// features. Auto-ACK inherently changes how the underlying state machine
 /// behaves so users should not modify RAIL_SetRxTransitions() and
-/// RAIL_SetTxTransitions() while using auto ACK features.
+/// RAIL_SetTxTransitions() while using auto-ACK features.
 ///
 /// @code{.c}
 /// // Go to RX after ACK operation.
@@ -2776,36 +2946,43 @@ RAIL_Status_t RAIL_EnableAddressFilterAddress(RAIL_Handle_t railHandle,
 /// 10-byte packet but only 5 bytes are loaded into the ACK buffer, a TX
 /// underflow occurs during the ACK transmit.
 ///
-/// Unlike in non-ACK mode, ACK mode will always return to a single
+/// Unlike in non-auto-ACK mode, auto-ACK mode will always return to a single
 /// state after all ACK sequences complete, regardless of whether
 /// the ACK was successfully received/sent or not. See the documentation
-/// of RAIL_ConfigAutoAck for configuration information. To
-/// not auto acknowledge a series of packets after transmit
-/// or receive, call RAIL_PauseTxAutoAck(true) or RAIL_PauseRxAutoAck(true).
-/// When auto acking is paused, after receiving or transmitting (also
+/// of \ref RAIL_ConfigAutoAck for configuration information. To
+/// suspend automatic acknowledgment of a series of packets after transmit
+/// or receive call RAIL_PauseTxAutoAck(true) and resume by calling
+/// RAIL_PauseRxAutoAck(true).
+/// When auto-ACKing is paused, after receiving or transmitting (also
 /// regardless of success) a packet, the radio transitions to the same single
-/// state it always defaults to while acking. To return to
-/// normal state transition logic outside of acking, call
+/// state it always defaults to while ACKing. To return to
+/// normal state transition logic outside of ACKing, call
 /// RAIL_ConfigAutoAck with the "enable" field false and specify the
 /// desired transitions in the rxTransitions and txTransitions fields.
-/// To get out of a paused state and resume auto acking, call
+/// To get out of a paused state and resume auto-ACKing, call
 /// RAIL_PauseTxAutoAck(false) or RAIL_PauseRxAutoAck(false).
 ///
 /// Applications can cancel the transmission of an ACK with
 /// RAIL_CancelAutoAck(). Conversely, applications can control if a transmit
 /// operation should wait for an ACK after transmitting by using
-/// the \ref RAIL_TX_OPTION_WAIT_FOR_ACK bit.
+/// the \ref RAIL_TX_OPTION_WAIT_FOR_ACK option.
+///
+/// When \ref Antenna_Control is used for multiple antennas, ACKs are
+/// transmitted on the antenna that was selected to receive the packet
+/// being acknowledged. When receiving an ACK, the
+/// \ref RAIL_RxOptions_t antenna options are used just like for any other
+/// receive.
 ///
 /// If the ACK payload is dynamic, the application must call
 /// RAIL_WriteAutoAckFifo() with the appropriate ACK payload after the
-/// application processes the receive. RAIL can auto ACK from the normal
+/// application processes the receive. RAIL can auto-ACK from the normal
 /// transmit buffer if RAIL_UseTxFifoForAutoAck() is called before the radio
 /// transmits the ACK. Ensure the transmit buffer contains data loaded by
 /// RAIL_WriteTxFifo().
 ///
-/// Standard-based protocols that contain auto ACK functionality are normally
+/// Standard-based protocols that contain auto-ACK functionality are normally
 /// configured in the protocol-specific configuration function. For example,
-/// RAIL_IEEE802154_Init() provides auto ACK configuration parameters in \ref
+/// RAIL_IEEE802154_Init() provides auto-ACK configuration parameters in \ref
 /// RAIL_IEEE802154_Config_t and should only be configured through that
 /// function. It is not advisable to call both RAIL_IEEE802154_Init() and
 /// RAIL_ConfigAutoAck(). However, ACK modification functions are still valid to
@@ -2814,21 +2991,21 @@ RAIL_Status_t RAIL_EnableAddressFilterAddress(RAIL_Handle_t railHandle,
 ///
 /// @{
 
-/// Configures and enables auto acknowledgment.
+/// Configures and enables automatic acknowledgment.
 ///
 /// @param[in] railHandle A RAIL instance handle.
-/// @param[in] config Auto ACK configuration structure.
+/// @param[in] config Auto-ACK configuration structure.
 /// @return Status code indicating success of the function call.
 ///
-/// Configures the RAIL state machine to for hardware-accelerated auto
+/// Configures the RAIL state machine to for hardware-accelerated automatic
 /// acknowledgment. ACK timing parameters are defined in the configuration
 /// structure.
 ///
-/// While auto acking is enabled, do not call the following RAIL functions:
+/// While auto-ACKing is enabled, do not call the following RAIL functions:
 ///   - RAIL_SetRxTransitions()
 ///   - RAIL_SetTxTransitions()
 ///
-/// Note, that if you are enabling auto ACK (i.e., "enable" field is true)
+/// Note, that if you are enabling auto-ACK (i.e., "enable" field is true)
 /// The "error" fields of rxTransitions and txTransitions are ignored.
 /// After all ACK sequences, (success or fail) the state machine will return
 /// the radio to the "success" state. If you need information about the
@@ -2847,7 +3024,7 @@ RAIL_Status_t RAIL_EnableAddressFilterAddress(RAIL_Handle_t railHandle,
 /// {
 ///   RAIL_StateTiming_t timings;
 ///
-///   // User is already in auto ACK and wants a turnaround of 192 us.
+///   // User is already in auto-ACK and wants a turnaround of 192 us.
 ///   timings.rxToTx = 192;
 ///   timings.txToRx = 192 - 10;
 ///
@@ -2862,26 +3039,26 @@ RAIL_Status_t RAIL_EnableAddressFilterAddress(RAIL_Handle_t railHandle,
 /// @endcode
 ///
 /// As opposed to an explicit "Disable" API, set the "enable"
-/// field of the RAIL_AutoAckConfig_t to false. Then, auto ACK will be
+/// field of the RAIL_AutoAckConfig_t to false. Then, auto-ACK will be
 /// disabled and state transitions will be returned to the values set
 /// in \ref RAIL_AutoAckConfig_t. When disabling, the "ackTimeout" field
 /// isn't used.
 ///
-/// @note: Auto Acking may not be enabled while RX Channel Hopping is enabled.
+/// @note: Auto-ACKing may not be enabled while RX Channel Hopping is enabled.
 ///
 RAIL_Status_t RAIL_ConfigAutoAck(RAIL_Handle_t railHandle,
                                  const RAIL_AutoAckConfig_t *config);
 
 /**
- * Returns the enable status of the auto ACK feature.
+ * Returns the enable status of the auto-ACK feature.
  *
  * @param[in] railHandle A RAIL instance handle.
- * @return true if auto ACK is enabled, false if disabled.
+ * @return true if auto-ACK is enabled, false if disabled.
  */
 bool RAIL_IsAutoAckEnabled(RAIL_Handle_t railHandle);
 
 /**
- * Loads the auto ACK buffer with ACK data.
+ * Loads the auto-ACK buffer with ACK data.
  *
  * @param[in] railHandle A RAIL instance handle.
  * @param[in] ackData A pointer to ACK data to transmit.
@@ -2895,47 +3072,47 @@ RAIL_Status_t RAIL_WriteAutoAckFifo(RAIL_Handle_t railHandle,
                                     uint8_t ackDataLen);
 
 /**
- * Pauses/resumes RX auto ACK functionality.
+ * Pauses/resumes RX auto-ACK functionality.
  *
  * @param[in] railHandle A RAIL instance handle.
- * @param[in] pause Pause or resume RX auto acking.
+ * @param[in] pause Pause or resume RX auto-ACKing.
  * @return void.
  *
- * When RX auto acking is paused, the radio transitions to default
+ * When RX auto-ACKing is paused, the radio transitions to default
  * state after receiving a packet and does not transmit an ACK.
- * When RX auto ACK is resumed, the radio resumes automatically acking
+ * When RX auto-ACK is resumed, the radio resumes automatically ACKing
  * every successfully received packet.
  */
 void RAIL_PauseRxAutoAck(RAIL_Handle_t railHandle,
                          bool pause);
 
 /**
- * Returns whether the RX auto ACK is paused.
+ * Returns whether the RX auto-ACK is paused.
  *
  * @param[in] railHandle A RAIL instance handle.
- * @return true if RX auto ACK is paused, false if not paused.
+ * @return true if RX auto-ACK is paused, false if not paused.
  */
 bool RAIL_IsRxAutoAckPaused(RAIL_Handle_t railHandle);
 
 /**
- * Pauses/resumes TX auto ACK functionality.
+ * Pauses/resumes TX auto-ACK functionality.
  *
  * @param[in] railHandle A RAIL instance handle.
- * @param[in] pause Pause or resume TX auto acking.
+ * @param[in] pause Pause or resume TX auto-ACKing.
  * @return void.
  *
- * When TX auto acking is paused, the radio transitions to a default
+ * When TX auto-ACKing is paused, the radio transitions to a default
  * state after transmitting a packet and does not wait for an ACK. When TX
- * auto ACK is resumed, the radio resumes automatically waiting for
+ * auto-ACK is resumed, the radio resumes automatically waiting for
  * an ACK after a successful transmit.
  */
 void RAIL_PauseTxAutoAck(RAIL_Handle_t railHandle, bool pause);
 
 /**
- * Returns whether the TX auto ACK is paused.
+ * Returns whether the TX auto-ACK is paused.
  *
  * @param[in] railHandle A RAIL instance handle.
- * @return true if TX auto ACK is paused, false if not paused.
+ * @return true if TX auto-ACK is paused, false if not paused.
  */
 bool RAIL_IsTxAutoAckPaused(RAIL_Handle_t railHandle);
 
@@ -3212,19 +3389,21 @@ bool RAIL_IsRfSensed(RAIL_Handle_t railHandle);
  * the RX Channel Hopping API.
  * @code{.c}
  *
- * // The channel hopping buffer requires 30 words of overhead per channel,
- * // plus 3 words overall plus the size of the radioConfigDeltaSubtract of the
- * // whole PHY, plus the sum of the sizes of all the radioConfigDeltaAdds of
+ * // The channel hopping buffer requires RAIL_CHANNEL_HOPPING_BUFFER_SIZE_PER_CHANNEL
+ * // number of 32-bit words of overhead per channel, plus 3 words overall plus the
+ * // twice the size of the radioConfigDeltaSubtract of the whole radio config,
+ * // plus the twice the sum of the sizes of all the radioConfigDeltaAdds of
  * // all the channel hopping channels.
  * #define CHANNEL_HOPPING_NUMBER_OF_CHANNELS 4
- * #define CHANNEL_HOPPING_BUFFER_SIZE do {      \
- *   3 +                                         \
- *   (30 * CHANNEL_HOPPING_NUMBER_OF_CHANNELS) + \
- *   SIZEOF_UINT32_DELTA_SUBTRACT +              \
- *   SIZEOF_UINT32_DELTA_ADD_0 +                 \
- *   SIZEOF_UINT32_DELTA_ADD_1 +                 \
- *   SIZEOF_UINT32_DELTA_ADD_2 +                 \
- *   SIZEOF_UINT32_DELTA_ADD_3 +                 \
+ * #define CHANNEL_HOPPING_BUFFER_SIZE do {        \
+ *   3 +                                           \
+ *   (RAIL_CHANNEL_HOPPING_BUFFER_SIZE_PER_CHANNEL \
+ *    * CHANNEL_HOPPING_NUMBER_OF_CHANNELS) +      \
+ *   2 * (SIZEOF_UINT32_DELTA_SUBTRACT +           \
+ *   SIZEOF_UINT32_DELTA_ADD_0 +                   \
+ *   SIZEOF_UINT32_DELTA_ADD_1 +                   \
+ *   SIZEOF_UINT32_DELTA_ADD_2 +                   \
+ *   SIZEOF_UINT32_DELTA_ADD_3)                    \
  * } while (0)
  *
  * RAIL_RxChannelHoppingConfigEntry_t channelHoppingEntries[CHANNEL_HOPPING_NUMBER_OF_CHANNELS];
@@ -3255,11 +3434,15 @@ bool RAIL_IsRfSensed(RAIL_Handle_t railHandle);
  *
  * Configure Channel Hopping channels, conditions, and parameters. This
  * API must be called before RAIL_EnableChannelHopping. This API must
- * never be called while Channel Hopping is enabled.
+ * never be called while the radio is on with RX Duty Cycle or Channel
+ * Hopping enabled.
  *
  * @note This feature/API is not supported on the EFR32XG1 family of chips.
  *
  * @note This feature/API is currently not supported in multiprotocol.
+ *
+ * @note Calling this function will overwrite any settings configured with
+ *       \ref RAIL_ConfigRxDutyCycle.
  */
 RAIL_Status_t RAIL_ConfigRxChannelHopping(RAIL_Handle_t railHandle,
                                           RAIL_RxChannelHoppingConfig_t *config);
@@ -3276,7 +3459,7 @@ RAIL_Status_t RAIL_ConfigRxChannelHopping(RAIL_Handle_t railHandle,
  *
  * Enable or disable Channel Hopping. Additionally, specify whether hopping
  * should be reset to start from the channel at index zero, or continue
- * from the channel last hopped to. The radio should not be in receive when
+ * from the channel last hopped to. The radio should not be on when
  * this API is called. RAIL_ConfigChannelHopping must be called before this
  * API is called.
  *
@@ -3284,11 +3467,60 @@ RAIL_Status_t RAIL_ConfigRxChannelHopping(RAIL_Handle_t railHandle,
  *
  * @note This feature/API is currently not supported in multiprotocol.
  *
- * @note RX Channel Hopping may not be enabled while Auto Acking is enabled.
+ * @note RX Channel Hopping may not be enabled while auto-ACKing is enabled.
+ *
+ * @note Calling this function will overwrite any settings configured with
+ *       \ref RAIL_EnableRxDutyCycle.
  */
 RAIL_Status_t RAIL_EnableRxChannelHopping(RAIL_Handle_t railHandle,
                                           bool enable,
                                           bool reset);
+
+/**
+ * Configure RX duty cycle mode
+ *
+ * @param[in] railHandle A RAIL instance handle.
+ * @param[in] config Configuration structure to specify duty cycle parameters.
+ * @return Status code indicating success of the function call.
+ *
+ * Configure RX duty cycle mode. With this mode enabled, every time the radio
+ * enters RX, it will duty cycle on and off to save power. The duty cycle
+ * ratio can be altered dynamically and intelligently by the hardware by
+ * staying on longer if a preamble or other packet segments are detected in
+ * the air. This API must never be called while the radio is on with RX Duty
+ * Cycle or Channel Hopping enabled.
+ *
+ * @note This feature/API is not supported on the EFR32XG1 family of chips.
+ *
+ * @note Calling this function will overwrite any settings configured with
+ *       \ref RAIL_ConfigRxChannelHopping.
+ *
+ * @note This feature/API is currently not supported in multiprotocol.
+ */
+RAIL_Status_t RAIL_ConfigRxDutyCycle(RAIL_Handle_t railHandle,
+                                     const RAIL_RxDutyCycleConfig_t *config);
+
+/**
+ * Enable RX duty cycle mode
+ *
+ * @param[in] railHandle A RAIL instance handle.
+ * @param[in] enable Enable (true) or disable (false) RX Duty Cycling.
+ * @return Status code indicating success of the function call.
+ *
+ * Enable or disable RX duty cycle mode. After this is called, the radio
+ * will begin duty cycling each time it enters RX, based on the
+ * configuration passed to \ref RAIL_ConfigRxDutyCycle. This API must not
+ * be called while the radio is on.
+ *
+ * @note This feature/API is not supported on the EFR32XG1 family of chips.
+ *
+ * @note Calling this function will overwrite any settings configured with
+ *       \ref RAIL_EnableRxChannelHopping.
+ *
+ * @note This feature/API is currently not supported in multiprotocol.
+ */
+RAIL_Status_t RAIL_EnableRxDutyCycle(RAIL_Handle_t railHandle,
+                                     bool enable);
 
 /** @} */ // end of group Rx_Channel_Hopping
 
@@ -3352,6 +3584,20 @@ RAIL_SchedulerStatus_t RAIL_GetSchedulerStatus(RAIL_Handle_t railHandle);
 RAIL_Status_t RAIL_SetTaskPriority(RAIL_Handle_t railHandle,
                                    uint8_t priority,
                                    RAIL_TaskType_t taskType);
+
+/**
+ * Get time needed to switch between protocols.
+ *
+ * @return \ref RAIL_Time_t Time needed to switch between protocols.
+ */
+RAIL_Time_t RAIL_GetTransitionTime(void);
+
+/**
+ * Set time needed to switch between protocols.
+ *
+ * @param[in] transitionTime Time needed to switch between protocols.
+ */
+void RAIL_SetTransitionTime(RAIL_Time_t transitionTime);
 
 /** @} */ // end of group Multiprotocol
 
