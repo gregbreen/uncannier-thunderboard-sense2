@@ -1,10 +1,20 @@
-/**************************************************************************//**
-* @file startup_efr32mg12p.c
-* @brief CMSIS Compatible EFR32MG12P startup file in C.
-*        Should be used with GCC 'GNU Tools ARM Embedded'
-* @version 5.6.0
-* @date     10. January 2018
-******************************************************************************/
+/***************************************************************************//**
+ * @file
+ * @brief CMSIS Compatible EFR32MG12P startup file in C.
+ *        Should be used with GCC 'GNU Tools ARM Embedded'
+ * @version 5.7.0
+ *******************************************************************************
+ * # License
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is Third Party Software licensed by Silicon Labs from a third party
+ * and is governed by the sections of the MSLA applicable to Third Party
+ * Software and the additional terms set forth below.
+ *
+ ******************************************************************************/
 /*
  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
  *

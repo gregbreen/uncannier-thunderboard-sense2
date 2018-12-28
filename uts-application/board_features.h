@@ -1,13 +1,17 @@
 /***************************************************************************//**
- * @file board_features.h
+ * @file
+ * @brief board_features.h
  *******************************************************************************
  * # License
- * <b>Copyright 2018 Silicon Labs, Inc. http://www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * This file is licensed under the Silabs License Agreement. See the file
- * "Silabs_License_Agreement.txt" for details. Before using this software for
- * any purpose, you must agree to the terms of that agreement.
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
 
@@ -39,12 +43,15 @@
   || (EMBER_AF_BOARD_TYPE == BRD4169A)\
   || (EMBER_AF_BOARD_TYPE == BRD4169B)\
   || (EMBER_AF_BOARD_TYPE == BRD4170A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4171A)\
   || (EMBER_AF_BOARD_TYPE == BRD4172A)\
   || (EMBER_AF_BOARD_TYPE == BRD4172B)\
   || (EMBER_AF_BOARD_TYPE == BRD4173A)\
   || (EMBER_AF_BOARD_TYPE == BRD4174A)\
   || (EMBER_AF_BOARD_TYPE == BRD4174B)\
   || (EMBER_AF_BOARD_TYPE == BRD4175A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4180A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4181A)\
   || (EMBER_AF_BOARD_TYPE == BRD4300A)\
   || (EMBER_AF_BOARD_TYPE == BRD4300C)\
   || (EMBER_AF_BOARD_TYPE == BRD4300D)\
@@ -99,6 +106,7 @@
   || (EMBER_AF_BOARD_TYPE == BRD4169A)\
   || (EMBER_AF_BOARD_TYPE == BRD4169B)\
   || (EMBER_AF_BOARD_TYPE == BRD4170A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4171A)\
   || (EMBER_AF_BOARD_TYPE == BRD4172A)\
   || (EMBER_AF_BOARD_TYPE == BRD4172B)\
   || (EMBER_AF_BOARD_TYPE == BRD4173A)\
@@ -147,7 +155,7 @@
   || (EMBER_AF_BOARD_TYPE == BRD4305E)\
   || (EMBER_AF_BOARD_TYPE == BRD4306B)\
   || (EMBER_AF_BOARD_TYPE == BRD4306D)
-#define FEATURE_PA_HIGH_POWER
+#define FEATURE_PA_INPUT_FROM_VBAT
 #endif
 
 #if (EMBER_AF_BOARD_TYPE == BRD4103A)\
@@ -183,12 +191,15 @@
   || (EMBER_AF_BOARD_TYPE == BRD4169A)\
   || (EMBER_AF_BOARD_TYPE == BRD4169B)\
   || (EMBER_AF_BOARD_TYPE == BRD4170A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4171A)\
   || (EMBER_AF_BOARD_TYPE == BRD4172A)\
   || (EMBER_AF_BOARD_TYPE == BRD4172B)\
   || (EMBER_AF_BOARD_TYPE == BRD4173A)\
   || (EMBER_AF_BOARD_TYPE == BRD4174A)\
   || (EMBER_AF_BOARD_TYPE == BRD4174B)\
   || (EMBER_AF_BOARD_TYPE == BRD4175A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4180A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4181A)\
   || (EMBER_AF_BOARD_TYPE == BRD4300A)\
   || (EMBER_AF_BOARD_TYPE == BRD4300C)\
   || (EMBER_AF_BOARD_TYPE == BRD4300D)\
@@ -235,6 +246,8 @@
   || (EMBER_AF_BOARD_TYPE == BRD4174A)\
   || (EMBER_AF_BOARD_TYPE == BRD4174B)\
   || (EMBER_AF_BOARD_TYPE == BRD4175A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4180A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4181A)\
   || (EMBER_AF_BOARD_TYPE == BRD4300A)\
   || (EMBER_AF_BOARD_TYPE == BRD4300C)\
   || (EMBER_AF_BOARD_TYPE == BRD4300D)\
@@ -284,7 +297,107 @@
   || (EMBER_AF_BOARD_TYPE == BRD4174A)\
   || (EMBER_AF_BOARD_TYPE == BRD4174B)\
   || (EMBER_AF_BOARD_TYPE == BRD4175A)\
-  || (EMBER_AF_BOARD_TYPE == BRD4176A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4300A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4300C)\
+  || (EMBER_AF_BOARD_TYPE == BRD4300D)\
+  || (EMBER_AF_BOARD_TYPE == BRD4301A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4302A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4303A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4304A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4305A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4305C)\
+  || (EMBER_AF_BOARD_TYPE == BRD4305D)\
+  || (EMBER_AF_BOARD_TYPE == BRD4305E)\
+  || (EMBER_AF_BOARD_TYPE == BRD4306A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4306B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4306C)\
+  || (EMBER_AF_BOARD_TYPE == BRD4306D)
+#define FEATURE_I2C_SENSOR
+#endif
+
+#if (EMBER_AF_BOARD_TYPE == BRD4100A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4101B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4103A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4104A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4105A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4150A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4150B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4150C)\
+  || (EMBER_AF_BOARD_TYPE == BRD4151A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4153A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4158A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4159A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4160A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4161A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4162A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4163A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4164A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4165B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4166A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4167A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4168A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4169A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4169B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4170A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4172A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4172B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4173A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4174A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4174B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4175A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4180A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4181A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4300A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4300C)\
+  || (EMBER_AF_BOARD_TYPE == BRD4300D)\
+  || (EMBER_AF_BOARD_TYPE == BRD4301A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4302A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4303A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4304A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4305A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4305C)\
+  || (EMBER_AF_BOARD_TYPE == BRD4305D)\
+  || (EMBER_AF_BOARD_TYPE == BRD4305E)\
+  || (EMBER_AF_BOARD_TYPE == BRD4306A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4306B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4306C)\
+  || (EMBER_AF_BOARD_TYPE == BRD4306D)
+#define FEATURE_LFXO
+#endif
+
+#if (EMBER_AF_BOARD_TYPE == BRD4100A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4101B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4103A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4104A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4105A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4150A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4150B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4150C)\
+  || (EMBER_AF_BOARD_TYPE == BRD4151A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4153A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4158A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4159A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4160A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4161A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4162A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4163A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4164A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4165B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4166A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4167A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4168A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4169A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4169B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4170A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4171A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4172A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4172B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4173A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4174A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4174B)\
+  || (EMBER_AF_BOARD_TYPE == BRD4175A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4180A)\
+  || (EMBER_AF_BOARD_TYPE == BRD4181A)\
   || (EMBER_AF_BOARD_TYPE == BRD4300A)\
   || (EMBER_AF_BOARD_TYPE == BRD4300C)\
   || (EMBER_AF_BOARD_TYPE == BRD4300D)\

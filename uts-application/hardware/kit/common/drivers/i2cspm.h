@@ -1,15 +1,17 @@
 /***************************************************************************//**
  * @file
  * @brief I2C simple poll-based master mode driver for the DK/STK.
- * @version 5.6.0
  *******************************************************************************
  * # License
- * <b>Copyright 2015 Silicon Labs, Inc. http://www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * This file is licensed under the Silabs License Agreement. See the file
- * "Silabs_License_Agreement.txt" for details. Before using this software for
- * any purpose, you must agree to the terms of that agreement.
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
 
@@ -29,8 +31,9 @@
  * @brief Kit support and drivers
  * @details
  *  Drivers and support modules for board components such as displays, sensors and
- *  memories on EFM32, EZR32 and EFR32 kits.
+ *  memory components on EFM32, EZR32 and EFR32 kits.
  *
+ *  For display device support, see section @ref display_doc for more information.
  * @{
  ******************************************************************************/
 
@@ -58,11 +61,11 @@ typedef struct {
   uint8_t               sclPin;         /**< SCL pin number */
   GPIO_Port_TypeDef     sdaPort;        /**< SDA pin port number */
   uint8_t               sdaPin;         /**< SDA pin number */
-#if defined (_I2C_ROUTELOC0_MASK)
+#if defined(_SILICON_LABS_32B_SERIES_0)
+  uint8_t               portLocation;   /**< Port location */
+#elif defined(_SILICON_LABS_32B_SERIES_1)
   uint8_t               portLocationScl; /**< Port location of SCL signal */
   uint8_t               portLocationSda; /**< Port location of SDA signal */
-#else
-  uint8_t               portLocation;   /**< Port location */
 #endif
   uint32_t              i2cRefFreq;     /**< I2C reference clock */
   uint32_t              i2cMaxFreq;     /**< I2C max bus frequency to use */
@@ -94,6 +97,17 @@ typedef struct {
     10,                         /* SDA pin */                                  \
     15,                         /* Location of SCL */                          \
     15,                         /* Location of SDA */                          \
+    0,                          /* Use currently configured reference clock */ \
+    I2C_FREQ_STANDARD_MAX,      /* Set to standard rate  */                    \
+    i2cClockHLRStandard,        /* Set to use 4:4 low/high duty cycle */       \
+  }
+#elif defined(_SILICON_LABS_32B_SERIES_2)
+#define I2CSPM_INIT_DEFAULT                                                    \
+  { I2C0,                       /* Use I2C instance 0 */                       \
+    gpioPortC,                  /* SCL port */                                 \
+    11,                         /* SCL pin */                                  \
+    gpioPortC,                  /* SDA port */                                 \
+    10,                         /* SDA pin */                                  \
     0,                          /* Use currently configured reference clock */ \
     I2C_FREQ_STANDARD_MAX,      /* Set to standard rate  */                    \
     i2cClockHLRStandard,        /* Set to use 4:4 low/high duty cycle */       \

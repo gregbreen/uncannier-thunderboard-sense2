@@ -1,3 +1,19 @@
+/***************************************************************************//**
+ * @brief Basic types used in Bluetooth stack
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
+ *
+ ******************************************************************************/
+
 #ifndef BG_TYPES_H
 #define BG_TYPES_H
 
@@ -41,6 +57,13 @@ typedef struct {
 typedef struct {
   uint8 data[16];
 } aes_key_128;
+
+#define MAX_UUID_LEN 16
+
+typedef struct {
+  uint8_t uuid[MAX_UUID_LEN];
+  uint32_t len;
+} sl_bt_uuid_t;
 
 #if !defined _MSC_VER && !defined __APPLE__
 /* Don't define under MSVC and OSX */

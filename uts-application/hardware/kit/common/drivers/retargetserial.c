@@ -1,15 +1,17 @@
 /***************************************************************************//**
  * @file
  * @brief Provide stdio retargeting to USART/UART or LEUART.
- * @version 5.6.0
  *******************************************************************************
  * # License
- * <b>Copyright 2015 Silicon Labs, Inc. http://www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * This file is licensed under the Silabs License Agreement. See the file
- * "Silabs_License_Agreement.txt" for details. Before using this software for
- * any purpose, you must agree to the terms of that agreement.
+ * The licensor of this software is Silicon Laboratories Inc. Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement. This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
 
@@ -25,6 +27,11 @@
 #else
 #include "retargetserialconfig.h"
 #endif
+
+/***************************************************************************//**
+ * @addtogroup kitdrv
+ * @{
+ ******************************************************************************/
 
 /***************************************************************************//**
  * @addtogroup RetargetIo
@@ -103,8 +110,6 @@ void RETARGET_IRQ_NAME(void)
   }
 }
 
-/** @} (end group RetargetIo) */
-
 /**************************************************************************//**
  * @brief UART/LEUART toggle LF to CRLF conversion
  * @param on If non-zero, automatic LF to CRLF conversion will be enabled
@@ -131,7 +136,7 @@ void RETARGET_SerialInit(void)
   CMU_ClockEnable(cmuClock_GPIO, true);
   /* To avoid false start, configure output as high */
   GPIO_PinModeSet(RETARGET_TXPORT, RETARGET_TXPIN, gpioModePushPull, 1);
-  GPIO_PinModeSet(RETARGET_RXPORT, RETARGET_RXPIN, gpioModeInput, 0);
+  GPIO_PinModeSet(RETARGET_RXPORT, RETARGET_RXPIN, gpioModeInputPull, 1);
 
 #if defined(RETARGET_USART)
   USART_TypeDef           *usart = RETARGET_UART;
@@ -345,3 +350,6 @@ void RETARGET_SerialFlush(void)
 
   while (!(RETARGET_UART->STATUS & _GENERIC_UART_STATUS_IDLE)) ;
 }
+
+/** @} (end group RetargetIo) */
+/** @} (end group kitdrv) */

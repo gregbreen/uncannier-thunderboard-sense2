@@ -56,5 +56,5 @@ void otaServiceControlWrite( uint8array *writeValue )
     gecko_cmd_gatt_server_send_user_write_response( conGetConnectionId(), gattdb_ota_control, bg_err_success );
 
     // Close connection to enter OTA DFU mode
-    gecko_cmd_endpoint_close( conGetConnectionId() );
+    gecko_cmd_le_connection_close( conGetConnectionId() );
 }

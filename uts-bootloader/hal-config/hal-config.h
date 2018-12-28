@@ -36,20 +36,19 @@
 // [BUTTON]$
 
 // $[CMU]
-#define HAL_CLK_HFCLK_SOURCE              (HAL_CLK_HFCLK_SOURCE_HFRCO)
-#define HAL_CLK_LFECLK_SOURCE             (HAL_CLK_LFCLK_SOURCE_DISABLED)
-#define HAL_CLK_LFBCLK_SOURCE             (HAL_CLK_LFCLK_SOURCE_DISABLED)
-#define BSP_CLK_LFXO_PRESENT              (1)
-#define BSP_CLK_HFXO_PRESENT              (1)
-#define BSP_CLK_LFXO_INIT                  CMU_LFXOINIT_DEFAULT
-#define BSP_CLK_LFXO_CTUNE                (32U)
-#define BSP_CLK_LFXO_FREQ                 (32768U)
-#define HAL_CLK_LFACLK_SOURCE             (HAL_CLK_LFCLK_SOURCE_DISABLED)
-#define BSP_CLK_HFXO_FREQ                 (38400000UL)
-#define BSP_CLK_HFXO_CTUNE                (332)
-#define BSP_CLK_HFXO_INIT                  CMU_HFXOINIT_DEFAULT
-#define BSP_CLK_HFXO_CTUNE_TOKEN          (0)
-#define HAL_CLK_HFXO_AUTOSTART            (HAL_CLK_HFXO_AUTOSTART_NONE)
+#define HAL_CLK_HFCLK_SOURCE            (HAL_CLK_HFCLK_SOURCE_HFRCO)
+#define HAL_CLK_LFECLK_SOURCE           (HAL_CLK_LFCLK_SOURCE_DISABLED)
+#define HAL_CLK_LFBCLK_SOURCE           (HAL_CLK_LFCLK_SOURCE_DISABLED)
+#define BSP_CLK_LFXO_PRESENT            (1)
+#define BSP_CLK_HFXO_PRESENT            (1)
+#define BSP_CLK_LFXO_INIT                CMU_LFXOINIT_DEFAULT
+#define BSP_CLK_LFXO_CTUNE              (32U)
+#define BSP_CLK_LFXO_FREQ               (32768U)
+#define HAL_CLK_LFACLK_SOURCE           (HAL_CLK_LFCLK_SOURCE_DISABLED)
+#define BSP_CLK_HFXO_FREQ               (38400000UL)
+#define BSP_CLK_HFXO_CTUNE              (332)
+#define BSP_CLK_HFXO_INIT                CMU_HFXOINIT_DEFAULT
+#define HAL_CLK_HFXO_AUTOSTART          (HAL_CLK_HFXO_AUTOSTART_NONE)
 // [CMU]$
 
 // $[COEX]
@@ -62,10 +61,10 @@
 // [CSEN]$
 
 // $[DCDC]
-#define BSP_DCDC_PRESENT                  (1)
+#define BSP_DCDC_PRESENT                (1)
 
-#define HAL_DCDC_BYPASS                   (0)
-#define BSP_DCDC_INIT                      EMU_DCDCINIT_DEFAULT
+#define HAL_DCDC_BYPASS                 (0)
+#define BSP_DCDC_INIT                    EMU_DCDCINIT_DEFAULT
 // [DCDC]$
 
 // $[EMU]
@@ -186,38 +185,38 @@
 // [WTIMER1]$
 
 // $[Custom pin names]
-#define HALL_ENABLE_PIN                   (10U)
-#define HALL_ENABLE_PORT                  (gpioPortB)
+#define HALL_ENABLE_PIN                 (10U)
+#define HALL_ENABLE_PORT                (gpioPortB)
 
-#define HALL_OUT1_PIN                     (11U)
-#define HALL_OUT1_PORT                    (gpioPortB)
+#define HALL_OUT1_PIN                   (11U)
+#define HALL_OUT1_PORT                  (gpioPortB)
 
-#define IMU_ENABLE_PIN                    (8U)
-#define IMU_ENABLE_PORT                   (gpioPortF)
+#define IMU_ENABLE_PIN                  (8U)
+#define IMU_ENABLE_PORT                 (gpioPortF)
 
-#define ENV_SENSE_ENABLE_PIN              (9U)
-#define ENV_SENSE_ENABLE_PORT             (gpioPortF)
+#define ENV_SENSE_ENABLE_PIN            (9U)
+#define ENV_SENSE_ENABLE_PORT           (gpioPortF)
 
-#define MIC_ENABLE_PIN                    (10U)
-#define MIC_ENABLE_PORT                   (gpioPortF)
+#define MIC_ENABLE_PIN                  (10U)
+#define MIC_ENABLE_PORT                 (gpioPortF)
 
-#define UV_ALS_INT_PIN                    (11U)
-#define UV_ALS_INT_PORT                   (gpioPortF)
+#define UV_ALS_INT_PIN                  (11U)
+#define UV_ALS_INT_PORT                 (gpioPortF)
 
-#define IMU_INT_PIN                       (12U)
-#define IMU_INT_PORT                      (gpioPortF)
+#define IMU_INT_PIN                     (12U)
+#define IMU_INT_PORT                    (gpioPortF)
 
-#define CCS811_INT_PIN                    (13U)
-#define CCS811_INT_PORT                   (gpioPortF)
+#define CCS811_INT_PIN                  (13U)
+#define CCS811_INT_PORT                 (gpioPortF)
 
-#define CCS811_ENABLE_PIN                 (14U)
-#define CCS811_ENABLE_PORT                (gpioPortF)
+#define CCS811_ENABLE_PIN               (14U)
+#define CCS811_ENABLE_PORT              (gpioPortF)
 
-#define CCS811_WAKE_PIN                   (15U)
-#define CCS811_WAKE_PORT                  (gpioPortF)
+#define CCS811_WAKE_PIN                 (15U)
+#define CCS811_WAKE_PORT                (gpioPortF)
 
-#define RGB_LED_ENABLE_PIN                (14U)
-#define RGB_LED_ENABLE_PORT               (gpioPortJ)
+#define RGB_LED_ENABLE_PIN              (14U)
+#define RGB_LED_ENABLE_PORT             (gpioPortJ)
 
 // [Custom pin names]$
 
@@ -225,6 +224,8 @@
 #include "sl_module.h"
 #endif
 
-
 #endif /* HAL_CONFIG_H */
+
+// $[MODEM]
+// [MODEM]$
 

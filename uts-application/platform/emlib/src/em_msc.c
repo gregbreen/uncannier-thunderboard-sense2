@@ -1,32 +1,31 @@
 /***************************************************************************//**
- * @file em_msc.c
+ * @file
  * @brief Flash controller (MSC) Peripheral API
- * @version 5.6.0
+ * @version 5.7.0
  *******************************************************************************
  * # License
- * <b>Copyright 2016 Silicon Laboratories, Inc. www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
  *
  * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
  *
  * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software.
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
  * 2. Altered source versions must be plainly marked as such, and must not be
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
- *
- * DISCLAIMER OF WARRANTY/LIMITATION OF REMEDIES: Silicon Labs has no
- * obligation to support this Software. Silicon Labs is providing the
- * Software "AS IS", with no express or implied warranties of any kind,
- * including, but not limited to, any implied warranties of merchantability
- * or fitness for any particular purpose or warranties against infringement
- * of any proprietary rights of a third party.
- *
- * Silicon Labs will not be liable for any consequential, incidental, or
- * special damages, or any other relief, or for any claim by any third party,
- * arising from your use of this Software.
  *
  ******************************************************************************/
 
@@ -76,7 +75,7 @@
 
 #if defined(_MSC_ECCCTRL_MASK) || defined(_SYSCFG_DMEM0ECCCTRL_MASK)
 #if defined(_SILICON_LABS_32B_SERIES_1_CONFIG_1)
-/* On Series 1 Config 1, EFM32GG11, ECC is supported for RAM0 and RAM1
+/* On Series 1 Config 1 EFM32GG11, ECC is supported for RAM0 and RAM1
    banks (not RAM2). It is necessary to figure out which is biggest to
    calculate the number of DMA descriptors needed. */
 #define ECC_RAM_SIZE_MAX   (SL_MAX(RAM0_MEM_SIZE, RAM1_MEM_SIZE))
@@ -96,6 +95,33 @@
 #define ECC_IFC_REG_ADDR   (&MSC->IFC)
 #define ECC_IFC_MASK       (MSC_IFC_RAMERR1B | MSC_IFC_RAMERR2B \
                             | MSC_IFC_RAM1ERR1B | MSC_IFC_RAM1ERR2B)
+
+#elif defined(_SILICON_LABS_GECKO_INTERNAL_SDID_106)
+/* On Series 1 Config 2 EFM32GG12, ECC is supported for RAM0, RAM1 and
+   RAM2 banks. All banks are of equal size. */
+#define ECC_RAM_SIZE_MAX   (RAM0_MEM_SIZE)
+
+#define ECC_RAM0_MEM_BASE  (RAM0_MEM_BASE)
+#define ECC_RAM0_MEM_SIZE  (RAM0_MEM_SIZE)
+
+#define ECC_RAM1_MEM_BASE  (RAM1_MEM_BASE)
+#define ECC_RAM1_MEM_SIZE  (RAM1_MEM_SIZE)
+
+#define ECC_RAM2_MEM_BASE  (RAM2_MEM_BASE)
+#define ECC_RAM2_MEM_SIZE  (RAM2_MEM_SIZE)
+
+#define ECC_CTRL_REG_ADDR  (&MSC->ECCCTRL)
+#define ECC_RAM0_WRITE_EN  (_MSC_ECCCTRL_RAMECCEWEN_SHIFT)
+#define ECC_RAM0_CHECK_EN  (_MSC_ECCCTRL_RAMECCCHKEN_SHIFT)
+#define ECC_RAM1_WRITE_EN  (_MSC_ECCCTRL_RAM1ECCEWEN_SHIFT)
+#define ECC_RAM1_CHECK_EN  (_MSC_ECCCTRL_RAM1ECCCHKEN_SHIFT)
+#define ECC_RAM2_WRITE_EN  (_MSC_ECCCTRL_RAM2ECCEWEN_SHIFT)
+#define ECC_RAM2_CHECK_EN  (_MSC_ECCCTRL_RAM2ECCCHKEN_SHIFT)
+
+#define ECC_IFC_REG_ADDR   (&MSC->IFC)
+#define ECC_IFC_MASK       (MSC_IFC_RAMERR1B | MSC_IFC_RAMERR2B     \
+                            | MSC_IFC_RAM1ERR1B | MSC_IFC_RAM1ERR2B \
+                            | MSC_IFC_RAM2ERR1B | MSC_IFC_RAM2ERR2B)
 
 #elif defined(_SILICON_LABS_32B_SERIES_2_CONFIG_1)
 
@@ -172,6 +198,12 @@ static const MSC_EccBank_Typedef eccBank[MSC_ECC_BANKS] =
   { ECC_CTRL_REG_ADDR, ECC_RAM1_WRITE_EN, ECC_RAM1_CHECK_EN,
     ECC_IFC_REG_ADDR, ECC_IFC_MASK,
     ECC_RAM1_MEM_BASE, ECC_RAM1_MEM_SIZE },
+#if MSC_ECC_BANKS > 2
+  { ECC_CTRL_REG_ADDR, ECC_RAM2_WRITE_EN, ECC_RAM2_CHECK_EN,
+    ECC_IFC_REG_ADDR, ECC_IFC_MASK,
+    ECC_RAM2_MEM_BASE, ECC_RAM2_MEM_SIZE },
+#endif
+
 #endif
 };
 #endif
@@ -345,7 +377,12 @@ msc_Return_TypeDef writeBurst(uint32_t address,
   }
 
   MSC->WRITECMD = MSC_WRITECMD_WRITEEND;
-  return mscStatusWait(MSC_STATUS_BUSY, 0);
+  if ((retVal = mscStatusWait((MSC_STATUS_BUSY | MSC_STATUS_PENDING), 0))
+      == mscReturnOk) {
+    // We need to check twice to be sure
+    retVal = mscStatusWait((MSC_STATUS_BUSY | MSC_STATUS_PENDING), 0);
+  }
+  return retVal;
 }
 MSC_RAMFUNC_DEFINITION_END
 
@@ -425,19 +462,27 @@ MSC_RAMFUNC_DEFINITION_BEGIN
 MSC_Status_TypeDef MSC_ErasePage(uint32_t *startAddress)
 {
   MSC_Status_TypeDef retVal;
+  bool wasLocked;
 
   // Address must be aligned to page boundary
   EFM_ASSERT((((uint32_t)startAddress) & (FLASH_PAGE_SIZE - 1U)) == 0);
 
-  if (MSC_IS_LOCKED()) {
-    return mscReturnLocked;
-  }
+  wasLocked = MSC_IS_LOCKED();
+  MSC->LOCK = MSC_LOCK_LOCKKEY_UNLOCK;
 
   MSC->WRITECTRL_SET = MSC_WRITECTRL_WREN;
   MSC->ADDRB         = (uint32_t)startAddress;
   MSC->WRITECMD      = MSC_WRITECMD_ERASEPAGE;
-  retVal             = mscStatusWait(MSC_STATUS_BUSY, 0);
+  if ((retVal = mscStatusWait((MSC_STATUS_BUSY | MSC_STATUS_PENDING), 0))
+      == mscReturnOk) {
+    // We need to check twice to be sure
+    retVal = mscStatusWait((MSC_STATUS_BUSY | MSC_STATUS_PENDING), 0);
+  }
   MSC->WRITECTRL_CLR = MSC_WRITECTRL_WREN;
+
+  if (wasLocked) {
+    MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+  }
 
   return retVal;
 }
@@ -482,15 +527,15 @@ MSC_Status_TypeDef MSC_WriteWord(uint32_t *address,
   uint8_t  *pData;
   uint32_t burstLen;
   MSC_Status_TypeDef retVal = mscReturnOk;
+  bool wasLocked;
 
   // Check alignment (must be aligned to words)
   EFM_ASSERT(((uint32_t)address & 0x3U) == 0);
   // Check number of bytes, must be divisable by four
   EFM_ASSERT((numBytes & 0x3U) == 0);
 
-  if (MSC_IS_LOCKED()) {
-    return mscReturnLocked;
-  }
+  wasLocked = MSC_IS_LOCKED();
+  MSC->LOCK = MSC_LOCK_LOCKKEY_UNLOCK;
 
   // Enable flash write
   MSC->WRITECTRL_SET = MSC_WRITECTRL_WREN;
@@ -515,6 +560,10 @@ MSC_Status_TypeDef MSC_WriteWord(uint32_t *address,
 
   // Disable flash write
   MSC->WRITECTRL_CLR = MSC_WRITECTRL_WREN;
+
+  if (wasLocked) {
+    MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+  }
 
   return retVal;
 }
@@ -776,6 +825,7 @@ MSC_Status_TypeDef MSC_LoadWriteData(uint32_t* data,
       if (timeOut == 0) {
         return mscReturnTimeOut;
       }
+
       /* Clear the double word option to write the initial single word. */
       MSC->WRITECTRL &= ~MSC_WRITECTRL_WDOUBLE;
       /* Write first data word. */
@@ -979,11 +1029,11 @@ MSC_Status_TypeDef MSC_WriteWordI(uint32_t *address,
   uint32_t numWords;
   uint32_t pageWords;
   uint32_t* pData;
+  bool wasLocked;
   MSC_Status_TypeDef retval = mscReturnOk;
 
-  if (MSC_IS_LOCKED()) {
-    return mscReturnLocked;
-  }
+  wasLocked = MSC_IS_LOCKED();
+  MSC->LOCK = MSC_LOCK_LOCKKEY_UNLOCK;
 
   /* Check alignment (must be aligned to words). */
   EFM_ASSERT(((uint32_t) address & 0x3) == 0);
@@ -1012,6 +1062,11 @@ MSC_Status_TypeDef MSC_WriteWordI(uint32_t *address,
        Therefore, the address phase is only needed once for each page. */
     retval = MSC_LoadVerifyAddress(address + wordCount);
     if (mscReturnOk != retval) {
+      /* Disable writing to the MSC module. */
+      MSC->WRITECTRL &= ~MSC_WRITECTRL_WREN;
+      if (wasLocked) {
+        MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+      }
       return retval;
     }
     /* Compute the number of words to write to the current page. */
@@ -1056,7 +1111,9 @@ MSC_Status_TypeDef MSC_WriteWordI(uint32_t *address,
   MSC->WRITECTRL &= ~MSC_WRITECTRL_WDOUBLE;
 #endif
 #endif
-
+  if (wasLocked) {
+    MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+  }
   return retval;
 }
 MSC_RAMFUNC_DEFINITION_END
@@ -1092,10 +1149,10 @@ MSC_RAMFUNC_DEFINITION_BEGIN
 MSC_Status_TypeDef MSC_ErasePage(uint32_t *startAddress)
 {
   uint32_t timeOut = MSC_PROGRAM_TIMEOUT;
+  bool wasLocked;
 
-  if (MSC_IS_LOCKED()) {
-    return mscReturnLocked;
-  }
+  wasLocked = MSC_IS_LOCKED();
+  MSC->LOCK = MSC_LOCK_LOCKKEY_UNLOCK;
 
   /* An address must be aligned to pages. */
   EFM_ASSERT((((uint32_t) startAddress) & (FLASH_PAGE_SIZE - 1)) == 0);
@@ -1114,8 +1171,11 @@ MSC_Status_TypeDef MSC_ErasePage(uint32_t *startAddress)
 
   /* Check for an invalid address. */
   if (MSC->STATUS & MSC_STATUS_INVADDR) {
-    /* Disable writing to the MSC */
+    /* Disable writing to the MSC module. */
     MSC->WRITECTRL &= ~MSC_WRITECTRL_WREN;
+    if (wasLocked) {
+      MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+    }
     return mscReturnInvalidAddr;
   }
 
@@ -1130,15 +1190,24 @@ MSC_Status_TypeDef MSC_ErasePage(uint32_t *startAddress)
   if (MSC->STATUS & MSC_STATUS_LOCKED) {
     /* Disable writing to the MSC module. */
     MSC->WRITECTRL &= ~MSC_WRITECTRL_WREN;
+    if (wasLocked) {
+      MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+    }
     return mscReturnLocked;
   }
   if (timeOut == 0) {
     /* Disable writing to the MSC module. */
     MSC->WRITECTRL &= ~MSC_WRITECTRL_WREN;
+    if (wasLocked) {
+      MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+    }
     return mscReturnTimeOut;
   }
   /* Disable writing to the MSC module. */
   MSC->WRITECTRL &= ~MSC_WRITECTRL_WREN;
+  if (wasLocked) {
+    MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+  }
   return mscReturnOk;
 }
 MSC_RAMFUNC_DEFINITION_END
@@ -1247,9 +1316,9 @@ MSC_RAMFUNC_DEFINITION_END
 MSC_RAMFUNC_DEFINITION_BEGIN
 MSC_Status_TypeDef MSC_MassErase(void)
 {
-  if (MSC_IS_LOCKED()) {
-    return mscReturnLocked;
-  }
+  bool wasLocked;
+  wasLocked = MSC_IS_LOCKED();
+  MSC->LOCK = MSC_LOCK_LOCKKEY_UNLOCK;
 
   /* Enable writing to the MSC module. */
   MSC->WRITECTRL |= MSC_WRITECTRL_WREN;
@@ -1278,6 +1347,10 @@ MSC_Status_TypeDef MSC_MassErase(void)
 
   /* Disable writing to the MSC module. */
   MSC->WRITECTRL &= ~MSC_WRITECTRL_WREN;
+
+  if (wasLocked) {
+    MSC->LOCK = MSC_LOCK_LOCKKEY_LOCK;
+  }
 
   /* This will only successfully return if calling function is also in SRAM. */
   return mscReturnOk;

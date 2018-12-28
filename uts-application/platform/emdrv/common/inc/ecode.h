@@ -1,15 +1,17 @@
 /***************************************************************************//**
- * @file ecode.h
+ * @file
  * @brief Energy Aware drivers error code definitions.
- * @version 5.6.0
  *******************************************************************************
  * # License
- * <b>(C) Copyright 2015 Silicon Labs, www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * This file is licensed under the Silabs License Agreement. See the file
- * "Silabs_License_Agreement.txt" for details. Before using this software for
- * any purpose, you must agree to the terms of that agreement.
+ * The licensor of this software is Silicon Laboratories Inc.  Your use of this
+ * software is governed by the terms of Silicon Labs Master Software License
+ * Agreement (MSLA) available at
+ * www.silabs.com/about-us/legal/master-software-license-agreement.  This
+ * software is distributed to you in Source Code format and is governed by the
+ * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
 #ifndef __SILICON_LABS_ECODE_H__
@@ -19,7 +21,7 @@
 
 /***************************************************************************//**
  * @defgroup emdrv EMDRV
- * @brief energyAware drivers
+ * @brief Gecko Platform driver library
  * @details
  *
  *  EMDRV is a set of function specific high performance drivers for EFM32, EZR32
@@ -46,7 +48,7 @@
  * @brief Typedef for API function error code return values.
  *
  * @details
- *        Bit 24-31:  Component, for example @ref EMDRV @n
+ *        Bit 24-31:  Component, for example @ref emdrv @n
  *        Bit 16-23:  Module, for example @ref UARTDRV or @ref RTCDRV @n
  *        Bit 0-15:   Error code
  ******************************************************************************/

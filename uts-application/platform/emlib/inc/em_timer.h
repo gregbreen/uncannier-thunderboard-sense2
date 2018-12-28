@@ -1,32 +1,31 @@
 /***************************************************************************//**
- * @file em_timer.h
+ * @file
  * @brief Timer/counter (TIMER) peripheral API
- * @version 5.6.0
+ * @version 5.7.0
  *******************************************************************************
  * # License
- * <b>Copyright 2016 Silicon Laboratories, Inc. www.silabs.com</b>
+ * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
  *
  * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
  *
  * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software.
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
  * 2. Altered source versions must be plainly marked as such, and must not be
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
- *
- * DISCLAIMER OF WARRANTY/LIMITATION OF REMEDIES: Silicon Labs has no
- * obligation to support this Software. Silicon Labs is providing the
- * Software "AS IS", with no express or implied warranties of any kind,
- * including, but not limited to, any implied warranties of merchantability
- * or fitness for any particular purpose or warranties against infringement
- * of any proprietary rights of a third party.
- *
- * Silicon Labs will not be liable for any consequential, incidental, or
- * special damages, or any other relief, or for any claim by any third party,
- * arising from your use of this Software.
  *
  ******************************************************************************/
 
@@ -98,7 +97,7 @@ typedef enum {
 /** Clock select. */
 typedef enum {
 #if defined (_TIMER_CTRL_CLKSEL_MASK)
-  timerClkSelHFPerClk = _TIMER_CTRL_CLKSEL_PRESCHFPERCLK, /**< Prescaled HFPER clock. */
+  timerClkSelHFPerClk = _TIMER_CTRL_CLKSEL_PRESCHFPERCLK, /**< Prescaled HFPER / HFPERB clock. */
   timerClkSelCC1      = _TIMER_CTRL_CLKSEL_CC1,           /**< Compare/Capture Channel 1 Input. */
   timerClkSelCascade  = _TIMER_CTRL_CLKSEL_TIMEROUF       /**< Cascaded clocked by underflow or overflow by lower numbered timer. */
 #endif
@@ -275,7 +274,7 @@ typedef struct {
   /** Counter shall keep running during debug halt. */
   bool                      debugRun;
 
-  /** Prescaling factor, if HFPER clock used. */
+  /** Prescaling factor, if HFPER / HFPERB clock used. */
   TIMER_Prescale_TypeDef    prescale;
 
   /** Clock selection. */
@@ -319,7 +318,7 @@ typedef struct {
     true,                 /* Enable timer when initialization completes. */           \
     false,                /* Stop counter during debug halt. */                       \
     timerPrescale1,       /* No prescaling. */                                        \
-    timerClkSelHFPerClk,  /* Select HFPER clock. */                                   \
+    timerClkSelHFPerClk,  /* Select HFPER / HFPERB clock. */                          \
     false,                /* Not 2x count mode. */                                    \
     false,                /* No ATI. */                                               \
     timerInputActionNone, /* No action on falling input edge. */                      \
@@ -336,7 +335,7 @@ typedef struct {
     true,                 /* Enable timer when initialization completes. */           \
     false,                /* Stop counter during debug halt. */                       \
     timerPrescale1,       /* No prescaling. */                                        \
-    timerClkSelHFPerClk,  /* Select HFPER clock. */                                   \
+    timerClkSelHFPerClk,  /* Select HFPER / HFPERB clock. */                          \
     timerInputActionNone, /* No action on falling input edge. */                      \
     timerInputActionNone, /* No action on rising input edge. */                       \
     timerModeUp,          /* Up-counting. */                                          \
@@ -469,7 +468,7 @@ typedef struct {
      is enabled. */
   TIMER_PRSSEL_TypeDef          prsSel;
 
-  /** DTI prescaling factor, if HFPER clock used. */
+  /** DTI prescaling factor, if HFPER / HFPERB clock used. */
   TIMER_Prescale_TypeDef        prescale;
 
   /** DTI Rise Time */
