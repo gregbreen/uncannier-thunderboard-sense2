@@ -3,7 +3,7 @@
 
 # Application configuration
 stackId: com.silabs.sdk.stack.super
-stackRoot: /opt/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.4
+stackRoot: /opt/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.5
 appId: ble
 frameworkRoot: app/bluetooth/appbuilder/fwk
 architecture: efr32~family[M]~series[1]~device_configuration[2]~performance[P]~radio[332]~flash[1024K]~temp[G]~package[L]~pins[125]~!module+BRD4166A+gcc
