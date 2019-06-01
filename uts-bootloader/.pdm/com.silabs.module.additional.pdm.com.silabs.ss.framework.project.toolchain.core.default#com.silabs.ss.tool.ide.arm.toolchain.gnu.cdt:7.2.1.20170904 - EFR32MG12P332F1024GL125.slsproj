@@ -27,7 +27,7 @@
   <macroDefinition name="BTL_CONFIG_FILE" value="&quot;bootloader-configuration.h&quot;"/>
   <macroDefinition name="BTL_SLOT_CONFIGURATION" value="&quot;bootloader-slot-configuration.h&quot;"/>
   <macroDefinition name="EM_MSC_RUN_FROM_FLASH" value=""/>
-  <macroDefinition name="BOOTLOADER_VERSION_MAIN_CUSTOMER" value="0"/>
+  <macroDefinition name="BOOTLOADER_VERSION_MAIN_CUSTOMER" value="4"/>
   <macroDefinition name="MBEDTLS_CONFIG_FILE" value="&quot;config-sl-crypto-all-acceleration.h&quot;"/>
   <macroDefinition name="HAL_CONFIG" value="1"/>
   <macroDefinition name="EMBER_AF_USE_HWCONF" value=""/>

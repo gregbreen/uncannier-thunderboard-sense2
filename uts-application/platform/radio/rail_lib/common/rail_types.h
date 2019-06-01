@@ -1705,7 +1705,8 @@ RAIL_ENUM(RAIL_ScheduledTxDuringRx_t) {
    */
   RAIL_SCHEDULED_TX_DURING_RX_POSTPONE_TX,
   /**
-   * The scheduled TX will be aborted and a TX aborted event will fire.
+   * The scheduled TX will be aborted and a
+   * \ref RAIL_EVENT_TX_BLOCKED event will fire.
    */
   RAIL_SCHEDULED_TX_DURING_RX_ABORT_TX,
 };
@@ -2658,7 +2659,7 @@ typedef struct RAIL_RxChannelHoppingConfig {
    * its own calculations and processing, application level code
    * should never write data into anywhere in this buffer.
    *
-   * @note: the size of this buffer must be at least as large as
+   * @note the size of this buffer must be at least as large as
    * 3 + 30 * numberOfChannels, plus the sum of the sizes of the
    * radioConfigDeltaAdd's of the required channels, plus the size of the
    * radioConfigDeltaSubtract. In the case that one channel

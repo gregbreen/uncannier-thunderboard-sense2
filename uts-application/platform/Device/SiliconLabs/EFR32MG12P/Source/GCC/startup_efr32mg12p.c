@@ -2,7 +2,7 @@
  * @file
  * @brief CMSIS Compatible EFR32MG12P startup file in C.
  *        Should be used with GCC 'GNU Tools ARM Embedded'
- * @version 5.7.0
+ * @version 5.7.3
  *******************************************************************************
  * # License
  *

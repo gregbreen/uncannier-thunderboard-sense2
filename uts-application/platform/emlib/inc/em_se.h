@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * @file
  * @brief Secure Element API
- * @version 5.7.0
+ * @version 5.7.3
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
@@ -59,6 +59,13 @@ extern "C" {
  *   @note Although commands to interact with the mailbox directly are
  *   available, it is always recommended to use the higher level APIs available
  *   in em_se and through mbedTLS.
+ *
+ *   @note Using the SE's mailbox is not thread-safe in emlib, and accessing the
+ *   SE's mailbox both in regular and IRQ context is not safe, either. If
+ *   mbedTLS is compiled into the application, SE operations should be wrapped
+ *   in se_management_acquire()/se_management_release() calls to synchronize
+ *   access. If mbedTLS is not in use, it is the user's responsibility to not
+ *   trigger simultaneous use of the SE mailbox.
  *
  * @{
  ******************************************************************************/

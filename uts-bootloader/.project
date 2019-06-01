@@ -166,6 +166,11 @@
 			<locationURI>STUDIO_SDK_LOC/util/third_party/mbedtls/sl_crypto/src/se_aes.c</locationURI>
 		</link>
 		<link>
+			<name>mbedtls/se_management.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/util/third_party/mbedtls/sl_crypto/src/se_management.c</locationURI>
+		</link>
+		<link>
 			<name>mbedtls/se_sha.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/util/third_party/mbedtls/sl_crypto/src/se_sha.c</locationURI>
@@ -186,7 +191,7 @@
 			<locationURI>STUDIO_SDK_LOC/platform/bootloader/plugin/parser/btl_image_parser.c</locationURI>
 		</link>
 		<link>
-			<name>storage-common/btl_storage.c</name>
+			<name>storage-common-single/btl_storage.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/bootloader/plugin/storage/btl_storage.c</locationURI>
 		</link>

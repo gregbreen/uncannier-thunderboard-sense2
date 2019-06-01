@@ -42,9 +42,9 @@
 // Use this macro to check if Image Parser plugin is included
 #define EMBER_AF_PLUGIN_PARSER
 
-// Use this macro to check if Common Storage plugin is included
-#define EMBER_AF_PLUGIN_STORAGE_COMMON
-// User options for plugin Common Storage
+// Use this macro to check if Common Storage (single storage slot only) plugin is included
+#define EMBER_AF_PLUGIN_STORAGE_COMMON_SINGLE
+// User options for plugin Common Storage (single storage slot only)
 #define BTL_STORAGE_BASE_ADDRESS 540672
 
 // Use this macro to check if Token Management plugin is included

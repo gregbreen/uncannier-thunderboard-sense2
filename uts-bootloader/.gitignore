@@ -6,6 +6,6 @@ emlib
 internal_flash
 mbedtls
 parser
-storage-common
+storage-common-single
 token-management
 /Release/

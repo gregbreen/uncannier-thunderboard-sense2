@@ -144,7 +144,7 @@ typedef struct {
   volatile uint16_t tail;                  ///< An index of the location to enqueue the next message.
   volatile uint16_t used;                  ///< A number of bytes queued.
   const uint16_t size;                     ///< FIFO size.
-  UARTDRV_Buffer_t fifo[];                 ///< FIFO of queued data.
+  UARTDRV_Buffer_t fifo[1];                ///< FIFO of queued data. Actual size varies.
 } UARTDRV_Buffer_FifoQueue_t;
 
 /// Macros to define FIFO and buffer queues. typedef can't be used becuase the size

@@ -339,6 +339,11 @@ uint16_t RAIL_SetFixedLength(RAIL_Handle_t railHandle, uint16_t length);
  *
  * When configuring channels on EFR32, the radio tuner is reconfigured
  * based on the frequency and channel spacing in the channel configuration.
+ *
+ * @note config can be NULL to simply register or unregister the cb callback
+ *   function when using RAIL internal protocol-specific radio configuration
+ *   APIs for BLE, IEEE 802.15.4, or Z-Wave, which lack callback specification.
+ *   In this use case, 0 is returned.
  */
 uint16_t RAIL_ConfigChannels(RAIL_Handle_t railHandle,
                              const RAIL_ChannelConfig_t *config,
@@ -1563,7 +1568,7 @@ RAIL_RadioState_t RAIL_GetRadioState(RAIL_Handle_t railHandle);
 /// RAIL_SetTxPower(railHandle, powerLevel);
 /// @endcode
 ///
-/// @note: All lines following "RAIL_TxPower_t power = 100;" can be
+/// @note All lines following "RAIL_TxPower_t power = 100;" can be
 /// replaced with the provided utility function, \ref RAIL_SetTxPowerDbm.
 /// However, the full example here was provided for clarity. See the
 /// documentation on \ref RAIL_SetTxPowerDbm for more details.
@@ -1604,7 +1609,7 @@ RAIL_Status_t RAIL_ConfigTxPower(RAIL_Handle_t railHandle,
  * successful.
  *
  * Note that this API does not return the current TX power, which is separately
- * managed by the \ref RAIL_GetTxPower/\ref RAIL_SetTxPower APIs. This API
+ * managed by the \ref RAIL_GetTxPower / \ref RAIL_SetTxPower APIs. This API
  * should be used to determine which values were set as a result of
  * \ref RAIL_ConfigTxPower.
  */
@@ -2655,6 +2660,13 @@ RAIL_Status_t RAIL_ReleaseRxPacket(RAIL_Handle_t railHandle,
  * Additionally, 'wait' should never be set 'true' in multiprotocol
  * as the wait time is not consistent, so scheduling a scheduler
  * slot cannot be done accurately.
+ *
+ * @note If RX Antenna Diversity is enabled via \ref RAIL_ConfigRxOptions(),
+ *   pass true for the wait parameter otherwise it's very likely
+ *   \ref RAIL_RSSI_INVALID will be returned.
+ *
+ * @note If RX channel hopping is turned on, this API
+ *   should not be used. Instead see RAIL_GetChannelHoppingRssi().
  */
 int16_t RAIL_GetRssi(RAIL_Handle_t railHandle, bool wait);
 
@@ -3044,7 +3056,7 @@ RAIL_Status_t RAIL_EnableAddressFilterAddress(RAIL_Handle_t railHandle,
 /// in \ref RAIL_AutoAckConfig_t. When disabling, the "ackTimeout" field
 /// isn't used.
 ///
-/// @note: Auto-ACKing may not be enabled while RX Channel Hopping is enabled.
+/// @note Auto-ACKing may not be enabled while RX Channel Hopping is enabled.
 ///
 RAIL_Status_t RAIL_ConfigAutoAck(RAIL_Handle_t railHandle,
                                  const RAIL_AutoAckConfig_t *config);
@@ -3475,6 +3487,24 @@ RAIL_Status_t RAIL_ConfigRxChannelHopping(RAIL_Handle_t railHandle,
 RAIL_Status_t RAIL_EnableRxChannelHopping(RAIL_Handle_t railHandle,
                                           bool enable,
                                           bool reset);
+/**
+ * Get RSSI of one channel in the channel hopping sequence, during
+ * channel hopping.
+ *
+ * @param[in] railHandle A RAIL instance handle.
+ * @param[in] channelIndex Index in the channel hopping sequence of the
+ *            channel of interest
+ * @return Latest RSSI for the channel at the specified index.
+ *
+ * @note This feature/API is not supported on the EFR32XG1 family of chips.
+ *
+ * @note This feature/API is currently not supported in multiprotocol.
+ *
+ * @note \ref RAIL_ConfigRxChannelHopping must be called successfully
+ *       before this API is called.
+ */
+int16_t RAIL_GetChannelHoppingRssi(RAIL_Handle_t railHandle,
+                                   uint8_t channelIndex);
 
 /**
  * Configure RX duty cycle mode

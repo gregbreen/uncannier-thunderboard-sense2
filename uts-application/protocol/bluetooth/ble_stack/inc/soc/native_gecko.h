@@ -378,9 +378,9 @@ enum l2cap_command_reject_reason
 
 enum l2cap_command_code
 {
-    l2cap_l2cap_disconnection_request                            = 0x6,
-    l2cap_l2cap_connection_request                               = 0x14,
-    l2cap_l2cap_flow_control_credit                              = 0x16
+    l2cap_disconnection_request                                  = 0x6,
+    l2cap_connection_request                                     = 0x14,
+    l2cap_flow_control_credit                                    = 0x16
 };
 
 enum gecko_parameter_types
@@ -2342,7 +2342,7 @@ PACKSTRUCT( struct gecko_msg_cte_receiver_iq_report_evt_t
     uint16              status;
     uint8               packet_type;
     uint8               handle;
-    int16               rssi;
+    int8                rssi;
     uint8               channel;
     uint8array          samples;
 });
@@ -3659,7 +3659,7 @@ static inline struct gecko_msg_le_gap_set_mode_rsp_t* gecko_cmd_le_gap_set_mode(
 *
 * gecko_cmd_le_gap_discover
 *
-* Deprecated. Replacement is "le_gap_start_discovery" command which allows to scan on LE 1M PHY or LE Coded PHY.
+* Deprecated. Replacement is "le_gap_start_discovery"             command. To preserve the same functionality when migrating to this new command, use LE 1M PHY in scanning_phy parameter.
 * This command can be used to start the GAP discovery procedure to scan
 * for advertising devices on LE 1M PHY. To cancel an ongoing
 * discovery process use the "le_gap_end_procedure" command.
@@ -4258,7 +4258,12 @@ static inline struct gecko_msg_le_gap_set_advertise_phy_rsp_t* gecko_cmd_le_gap_
 *
 * gecko_cmd_le_gap_set_advertise_configuration
 *
-* This command can be used to configure the type of advertising event and other advertising properties of the given advertising set. The command "le_gap_clear_advertise_configuration" can be used to clear the configurations set by this command. This setting will take effect on the next advertising enabling. 
+* This command can be used to enable advertising configuration flags on
+* the given advertising set. The                 configuration change
+* will take effects on the next advertising enabling.
+* These configuration flags can be disabled using
+* "le_gap_clear_advertise_configuration" command.
+*  
 *
 * @param handle   Advertising set handle
 * @param configurations   Advertising configuration flags to enable. This value can be a bitmask of multiple flags. Flags:                 
@@ -4289,7 +4294,7 @@ static inline struct gecko_msg_le_gap_set_advertise_configuration_rsp_t* gecko_c
 *
 * gecko_cmd_le_gap_clear_advertise_configuration
 *
-* This command can be used to disable advertising configurations on the given advertising set. The command "le_gap_set_advertise_configuration" can be used to set configurations. This setting will take effect on the next advertising enabling. 
+*  
 *
 * @param handle   Advertising set handle
 * @param configurations   Advertising configuration flags to disable. This value can be a bitmask of multiple flags. See "le_gap_set_advertise_configuration" for possible flags.                     
@@ -4326,6 +4331,8 @@ static inline struct gecko_msg_le_gap_clear_advertise_configuration_rsp_t* gecko
 * occurred under the default configuration:
 *  - The connectable mode is set to le_gap_connectable_non_scannable.
 *  - The primary advertising PHY has been set to LE Coded PHY by command "le_gap_set_advertise_phy".
+*  - The user advertising data length is more than 31 bytes.
+*  - Periodic advertising has been enabled.
 * If currently set parameters can't be used then an error will be
 * returned. Specifically, this command fails with "Connection Limit
 * Exceeded" error if it may cause the number of connections exceeding
@@ -4765,11 +4772,22 @@ static inline struct gecko_msg_le_gap_enable_whitelisting_rsp_t* gecko_cmd_le_ga
 *
 * gecko_cmd_sync_open
 *
-* This command can be used to establish a synchronization with periodic advertising from the specified             advertiser and begin receiving periodic advertising packets.          
+* This command can be used to establish a synchronization with a
+* periodic advertising from the specified             advertiser and
+* begin receiving periodic advertising packets. Note that
+* synchronization establishment can only             occur when scanning
+* is enabled. While scanning is disabled, no attempt to synchronize will
+* take place.
+* The application should decide skip and timeout values based on the
+* periodic advertising interval provided by             the advertiser.
+* It is recommended to set skip and timeout at the values that allow a
+* few receiving attempts.             Periodic advertising intervals are
+* reported in event             "le_gap_extended_scan_response".
+*  
 *
 * @param adv_sid   Advertising set identifier
-* @param skip   The number of periodic advertising packets that can be skipped after a successful receive.                     Range: 0x0000 to 0x01F3                  
-* @param timeout   Synchronization timeout for the periodic advertising. Unit: 10 ms.                      
+* @param skip   The maximum number of periodic advertising packets that can be skipped after a successful receive.                     Range: 0x0000 to 0x01F3                  
+* @param timeout   The maximum permitted time between successful receives. If this time is exceeded, synchronization is lost. Unit: 10 ms.                      
 *  - Range: 0x06 to 0xFFFF
 *  - Unit: 10 ms
 *  - Time range: 100 ms ms to 163.84 s
@@ -5570,14 +5588,27 @@ static inline struct gecko_msg_gatt_find_included_services_rsp_t* gecko_cmd_gatt
 *
 * gecko_cmd_gatt_read_multiple_characteristic_values
 *
-* This command can be used to read the values of multiple characteristics from a remote GATT database at once.              "gatt_characteristic_value" events are generated as the values are returned by the remote GATT server.             A received "gatt_procedure_completed" event indicates that either all data has been read successfully or that an error response has been received. 
+* This command can be used to read the values of multiple
+* characteristics from a remote GATT database at once.              The
+* GATT server will return the values in one ATT PDU as the response. If
+* the total set of values is greater than             (ATT_MTU - 1)
+* bytes in length, only the first (ATT_MTU - 1) bytes are included. A
+* single             "gatt_characteristic_value" event is generated, in
+* which the             characteristic is set to 0 and the data in value
+* parameter is a concatenation of characteristic values in the order
+* they were requested.             Received "gatt_procedure_completed"
+* event indicates that this GATT procedure              has successfully
+* completed or failed with error.
+* This command should be used only for characteristics values that have
+* known fixed size, except the last one that could have variable length.
+*  
 *
 * @param connection   
 * @param characteristic_list   Little endian encoded uint16 list of characteristics to be read.
 *
 * Events generated
 *
-* gecko_evt_gatt_characteristic_value - This event contains the data belonging to a characteristic sent by the GATT Server.
+* gecko_evt_gatt_characteristic_value - A concatenation of characteristic values in the order they were requested
 * gecko_evt_gatt_procedure_completed - Procedure has been successfully completed or failed with error.    
 *
 **/
@@ -6133,7 +6164,7 @@ static inline struct gecko_msg_flash_ps_load_rsp_t* gecko_cmd_flash_ps_load(uint
 *
 * gecko_cmd_flash_ps_erase
 *
-* This command can be used to erase a single PS key and its value from the persistent store.. 
+* This command can be used to erase a single PS key and its value from the persistent store. 
 *
 * @param key   PS key to erase    
 *
@@ -6305,7 +6336,10 @@ static inline struct gecko_msg_sm_set_bondable_mode_rsp_t* gecko_cmd_sm_set_bond
 * Bit 3: 
 *  - 0: Bonding request does not need to be confirmed
 *  - 1: Bonding requests need to be confirmed. Received bonding requests are notified with "sm_confirm_bonding events."
-* Bit 4 to 7: Reserved{br}{br}Default value: 0x00
+* Bit 4: 
+*  - 0: Allow all connections
+*  - 1: Allow connections only from bonded devices
+* Bit 5 to 7: Reserved{br}{br}Default value: 0x00
 * @param io_capabilities   I/O Capabilities. See link    
 *
 **/
@@ -6328,9 +6362,9 @@ static inline struct gecko_msg_sm_configure_rsp_t* gecko_cmd_sm_configure(uint8 
 *
 * gecko_cmd_sm_store_bonding_configuration
 *
-* This command can be used to set maximum allowed bonding count and bonding policy. The default value is maximum number of bondings supported. 
+* This command can be used to set maximum allowed bonding count and bonding policy. The actual maximum number of bondings that can be supported depends on how much user data is stored in the NVM and the NVM size. The default value is 14. 
 *
-* @param max_bonding_count   Maximum allowed bonding count. Range: 1 to 14
+* @param max_bonding_count   Maximum allowed bonding count. Range: 1 to 32
 * @param policy_flags   Bonding policy. Values: 
 *  - 0: If database is full, new bonding attempts will fail
 *  - 1: New bonding will overwrite the oldest existing bonding

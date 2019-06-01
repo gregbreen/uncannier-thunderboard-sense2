@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * @file
  * @brief Energy Management Unit (EMU) Peripheral API
- * @version 5.7.0
+ * @version 5.7.3
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
@@ -712,7 +712,7 @@ void EMU_EnterEM3(bool restore)
 #endif
   CMU_Unlock();
 
-#if defined(_CMU_OSENCMD_MASK)
+#if defined(_CMU_OSCENCMD_MASK)
   /* Disable LF oscillators. */
   CMU->OSCENCMD = CMU_OSCENCMD_LFXODIS | CMU_OSCENCMD_LFRCODIS;
 #endif
