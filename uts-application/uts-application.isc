@@ -1,5 +1,5 @@
 #ISD afv6
-# Simplicity Studio version: 4.29.2.201809141932-1327
+# Simplicity Studio version: 5.6.0.201904261019-1467
 
 # Application configuration
 stackId: com.silabs.sdk.stack.super
@@ -30,7 +30,7 @@ appPlugin: stack_bridge=false
 {setupId:additionalFiles
 }
 {setupId:bleGattConfigurator
-<?xml version="1.0" encoding="UTF-8"?><gatt generic_attribute_service="false" header="gatt_db.h" name="Custom BLE GATT" out="gatt_db.c" prefix="gattdb_">
+<?xml version="1.0" encoding="UTF-8"?><gatt gatt_caching="false" generic_attribute_service="false" header="gatt_db.h" name="Custom BLE GATT" out="gatt_db.c" prefix="gattdb_">
   <service advertise="false" name="Generic Access" requirement="mandatory" sourceId="org.bluetooth.service.generic_access" type="primary" uuid="1800">
     <informativeText>Abstract:  The generic_access service contains generic information about the device. All available Characteristics are readonly.  </informativeText>
     <characteristic id="device_name" name="Device Name" sourceId="org.bluetooth.characteristic.gap.device_name" uuid="2A00">
@@ -266,6 +266,8 @@ active=false
 {setupId:mpsi
 - mappings
 - custom messages
+}
+{setupId:quizz
 }
 
 # Plugin options

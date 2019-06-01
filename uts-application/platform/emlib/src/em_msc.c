@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * @file
  * @brief Flash controller (MSC) Peripheral API
- * @version 5.7.0
+ * @version 5.7.3
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
@@ -48,7 +48,7 @@
 /** @cond DO_NOT_INCLUDE_WITH_DOXYGEN */
 
 #if defined(__ICCARM__)
-/* Suppress warnings originating from use of EFM_ASSERT() with IAR:
+/* Suppress warnings originating from use of EFM_ASSERT() with IAR Embedded Workbench:
    EFM_ASSERT() is implemented as a local ramfunc */
 #pragma diag_suppress=Ta022
 #endif
@@ -437,10 +437,8 @@ void MSC_ExecConfigSet(MSC_ExecConfig_TypeDef *execConfig)
 /***************************************************************************//**
  * @brief
  *   Erases a page in flash memory.
- * @note
- *   It is recommended to run this code from RAM.
  *
- *   For IAR, Rowley, SimplicityStudio, Atollic and armgcc this will be achieved
+ *   For IAR Embedded Workbench, Simplicity Studio and GCC this will be achieved
  *   automatically by using attributes in the function proctype. For Keil
  *   uVision you must define a section called "ram_code" and place this manually
  *   in your project's scatter file.
@@ -495,9 +493,7 @@ MSC_RAMFUNC_DEFINITION_END
  * @note
  *   It is recommended to erase the flash page before performing a write.
  *
- *   It is recommended to run this code from RAM.
- *
- *   For IAR, Rowley, SimplicityStudio, Atollic and armgcc this will be achieved
+ *   For IAR Embedded Workbench, Simplicity Studio and GCC this will be achieved
  *   automatically by using attributes in the function proctype. For Keil
  *   uVision you must define a section called "ram_code" and place this manually
  *   in your project's scatter file.
@@ -1124,10 +1120,9 @@ MSC_RAMFUNC_DEFINITION_END
  * @brief
  *   Erases a page in flash memory.
  * @note
- *   It is recommended to run this code from RAM. On the Gecko family, it is required
- *   to run this function from RAM.
+ *   For the Gecko family, it is required to run this function from RAM.
  *
- *   For IAR IDE, Rowley IDE, SimplicityStudio IDE, Atollic IDE, and ARM GCC IDE, this is
+ *   For IAR Embedded Workbench, Simplicity Studio and GCC, this is
  *   achieved automatically by using attributes in the function proctype. For Keil
  *   uVision IDE, define a section called "ram_code" and place this manually in
  *   the project's scatter file.
@@ -1221,10 +1216,9 @@ MSC_RAMFUNC_DEFINITION_END
  * @note
  *   It is recommended to erase the flash page before performing a write.
  *
- *   It is recommended to run this code from RAM. On the Gecko family, it is required
- *   to run this function from RAM.
+ *   For the Gecko family, it is required to run this function from RAM.
  *
- *   For IAR IDE, Rowley IDE, SimplicityStudio IDE, Atollic IDE, and ARM GCC IDE,
+ *   For IAR Embedded Workbench, Simplicity Studio and GCC,
  *   this is done automatically by using attributes in the function proctype.
  *   For Keil uVision IDE, define a section called "ram_code" and place it
  *   manually in the project's scatter file.
@@ -1258,17 +1252,20 @@ MSC_Status_TypeDef MSC_WriteWord(uint32_t *address,
 MSC_RAMFUNC_DEFINITION_END
 
 #if !defined(_EFM32_GECKO_FAMILY)
+#if !defined (EM_MSC_RUN_FROM_FLASH) || (_SILICON_LABS_GECKO_INTERNAL_SDID < 84)
 /***************************************************************************//**
  * @brief
  *   Writes data to flash memory. This function is faster than MSC_WriteWord(),
  *   but it disables interrupts. Write data must be aligned to words and contain
  *   a number of bytes that is divisible by four.
+ * @warning
+ *   This function is only available for certain devices.
  * @note
  *   It is recommended to erase the flash page before performing a write.
  *   It is required to run this function from RAM on parts that include a
  *   flash write buffer.
  *
- *   For IAR IDE, Rowley IDE, SimplicityStudio IDE, Atollic IDE, and ARM GCC IDE,
+ *   For IAR Embedded Workbench, Simplicity Studio and GCC,
  *   this is done automatically by using attributes in the function proctype.
  *   For Keil uVision IDE, define a section called "ram_code" and place this manually
  *   in the project's scatter file.
@@ -1290,7 +1287,6 @@ MSC_RAMFUNC_DEFINITION_END
  *       the next word into the DWORD register.
  * @endverbatim
  ******************************************************************************/
-#if !defined (EM_MSC_RUN_FROM_FLASH) || (_SILICON_LABS_GECKO_INTERNAL_SDID < 84)
 MSC_RAMFUNC_DEFINITION_BEGIN
 MSC_Status_TypeDef MSC_WriteWordFast(uint32_t *address,
                                      void const *data,

@@ -124,7 +124,7 @@ typedef struct RAILSched_Config {
  * @brief The size, in 32-bit words, of RAIL_StateBuffer_t to store RAIL
  *   internal state for the EFR32XG13 series.
  */
-#define EFR32XG13_RAIL_STATE_UINT32_BUFFER_SIZE 84
+#define EFR32XG13_RAIL_STATE_UINT32_BUFFER_SIZE 86
 
 /**
  * @def EFR32XG14_RAIL_STATE_UINT32_BUFFER_SIZE
@@ -651,12 +651,10 @@ RAIL_ENUM(RAIL_AntennaSel_t) {
  * @brief A configuration for antenna selection.
  */
 typedef struct RAIL_AntennaConfig {
-  /** MODEM_ROUTEPEN fields */
   /** Antenna 0 Pin Enable */
   bool ant0PinEn;
   /** Antenna 1 Pin Enable */
   bool ant1PinEn;
-  /** MODEM_ROUTELOC1 fields */
   /** Antenna 0 location for pin/port */
   uint8_t ant0Loc;
   /** Antenna 0 output GPIO port */

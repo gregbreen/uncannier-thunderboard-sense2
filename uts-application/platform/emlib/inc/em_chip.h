@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * @file
  * @brief Chip Initialization API
- * @version 5.7.0
+ * @version 5.7.3
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
@@ -296,6 +296,8 @@ __STATIC_INLINE void CHIP_Init(void)
     *(volatile uint32_t*)(HFXO0_BASE + 0x30U) =
       (*(volatile uint32_t*)(HFXO0_BASE + 0x30U) & 0xFFFF0FFFU)
       | 0x0000C000U;
+    /* Change default SQBUF bias current. */
+    *(volatile uint32_t*)(HFXO0_BASE + 0x30U) |= 0x700;
   }
 
   if (chipRev.major == 0x01 && chipRev.minor == 0x0) {

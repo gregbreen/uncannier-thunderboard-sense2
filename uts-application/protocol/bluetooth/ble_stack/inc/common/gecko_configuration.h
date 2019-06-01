@@ -19,7 +19,7 @@
 
 #include "bg_gattdb_def.h"
 
-#define DEFAULT_BLUETOOTH_HEAP(CONNECTIONS) (4824 +(CONNECTIONS)*(480))
+#define DEFAULT_BLUETOOTH_HEAP(CONNECTIONS) (4824 +(CONNECTIONS)*(472))
 
 #define SLEEP_FLAGS_DEEP_SLEEP_ENABLE  4
 typedef struct {
@@ -102,9 +102,14 @@ typedef struct {
 typedef void (*gecko_priority_schedule_callback)(void);
 typedef void (*gecko_stack_schedule_callback)(void);
 
+#define GECKO_RF_CONFIG_ANTENNA                        (1 << 0)
 typedef struct {
   int16_t tx_gain; // RF TX gain in unit of 0.1 dBm. For example, -20 means -2.0 dBm (signal loss).
   int16_t rx_gain; // RF RX gain in unit of 0.1 dBm.
+  uint8_t flags; // bit 0 is enabling antenna config, other bits 1-7 are reserved.
+  uint8_t antenna; // A configuration for antenna selection.
+                   // Value should be come from RAIL_AntennaSel_t enum.
+                   // See antenna path selection in RAIL rail_chip_specific.h.
 } gecko_rf_config_t;
 
 typedef struct {

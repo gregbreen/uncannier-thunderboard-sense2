@@ -11,7 +11,7 @@
  *          Add "#include "em_device.h" to your source files
  * @endverbatim
  *
- * @version 5.7.0
+ * @version 5.7.3
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>

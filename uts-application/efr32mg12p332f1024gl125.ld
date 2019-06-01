@@ -195,5 +195,6 @@ SECTIONS
   } > FLASH
   
   /* Set NVM to end of FLASH*/
-  __nvm3Base = 0x00100000- SIZEOF(.nvm_dummy);
+  __nvm3Base = 0x00100000- SIZEOF(.nvm_dummy);  
+  ASSERT((__etext + SIZEOF(.text_application_data)) <= __nvm3Base, "FLASH memory overlapped with NVM section.")
 }
