@@ -52,12 +52,14 @@
     <property object="USART0" propertyId="USART.BSP_USART_RTS.PIN" value="PA3"/>
     <property object="USART0" propertyId="USART.BSP_USART_RX.PIN" value="PA1"/>
     <property object="USART0" propertyId="USART.BSP_USART_TX.PIN" value="PA0"/>
+    <property object="USART0" propertyId="USART.HAL_USART_FREQUENCY.INT" value="6400000"/>
     <property object="USART1" propertyId="USART.BSP_USART_CLK.PIN" value="PC8"/>
     <property object="USART1" propertyId="USART.BSP_USART_CS.PIN" value="PC9"/>
     <property object="USART1" propertyId="USART.BSP_USART_MISO.PIN" value="PC7"/>
     <property object="USART1" propertyId="USART.BSP_USART_MOSI.PIN" value="PC6"/>
     <property object="USART1" propertyId="USART.BSP_USART_RX.PIN" value="PC7"/>
     <property object="USART1" propertyId="USART.BSP_USART_TX.PIN" value="PC6"/>
+    <property object="USART1" propertyId="USART.HAL_USART_FREQUENCY.INT" value="6400000"/>
     <property object="USART1" propertyId="USART.hal_usart_mode.ENUM" value="spi"/>
     <property object="USART2" propertyId="USART.BSP_USART_CLK.PIN" value="PF7"/>
     <property object="USART2" propertyId="USART.BSP_USART_CS.PIN" value="PA5"/>
@@ -65,6 +67,7 @@
     <property object="USART2" propertyId="USART.BSP_USART_MOSI.PIN" value="PK0"/>
     <property object="USART2" propertyId="USART.BSP_USART_RX.PIN" value="PK2"/>
     <property object="USART2" propertyId="USART.BSP_USART_TX.PIN" value="PK0"/>
+    <property object="USART2" propertyId="USART.HAL_USART_FREQUENCY.INT" value="6400000"/>
     <property object="USART2" propertyId="USART.hal_usart_mode.ENUM" value="spi"/>
     <property object="USART3" propertyId="USART.BSP_USART_CLK.PIN" value="PC2"/>
     <property object="USART3" propertyId="USART.BSP_USART_CS.PIN" value="PC3"/>
@@ -72,6 +75,7 @@
     <property object="USART3" propertyId="USART.BSP_USART_MOSI.PIN" value="PC0"/>
     <property object="USART3" propertyId="USART.BSP_USART_RX.PIN" value="PC1"/>
     <property object="USART3" propertyId="USART.BSP_USART_TX.PIN" value="PC0"/>
+    <property object="USART3" propertyId="USART.HAL_USART_FREQUENCY.INT" value="6400000"/>
     <property object="USART3" propertyId="USART.hal_usart_mode.ENUM" value="spi"/>
   </mode>
   <modeTransition>

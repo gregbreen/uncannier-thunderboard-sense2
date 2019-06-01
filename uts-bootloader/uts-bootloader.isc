@@ -1,5 +1,5 @@
 #ISD afv6
-# Simplicity Studio version: 4.29.2.201809141932-1327
+# Simplicity Studio version: 5.6.0.201904261019-1467
 
 # Application configuration
 stackId: com.silabs.sdk.stack.super
@@ -34,8 +34,8 @@ appPlugin: parser-noenc=false
 appPlugin: spi-driver=false
 appPlugin: spiflash=false
 appPlugin: spislave-driver=false
-appPlugin: storage-common=true
-appPlugin: storage-common-single=false
+appPlugin: storage-common=false
+appPlugin: storage-common-single=true
 appPlugin: token-management=true
 appPlugin: uart-driver=false
 appPlugin: upgrade-version=false
@@ -70,6 +70,8 @@ See UG266: Gecko Bootloader User's Guide to learn more about how to configure th
 \}
 }
 {setupId:macros
+}
+{setupId:quizz
 }
 {setupId:template
 }

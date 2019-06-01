@@ -191,7 +191,7 @@
 			<locationURI>STUDIO_SDK_LOC/platform/bootloader/plugin/parser/btl_image_parser.c</locationURI>
 		</link>
 		<link>
-			<name>storage-common/btl_storage.c</name>
+			<name>storage-common-single/btl_storage.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/bootloader/plugin/storage/btl_storage.c</locationURI>
 		</link>
