@@ -20,8 +20,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "appl_ver.h"
-
 /* BG stack headers */
 #include "bg_types.h"
 #include "infrastructure.h"
@@ -45,7 +43,9 @@
 #include "power.h"
 #include "hallservice.h"
 
-/* uncannier services */
+/* uncannier headers */
+#include "ci.h"
+#include "di_service.h"
 #include "ota_service.h"
 
 #include "app_ble_adv.h"
@@ -133,7 +133,6 @@ static uint32_t uniqueId;
 
 static uint8_t  boardRevision[8];
 static uint8_t  boardSerial[16];
-static uint8_t  firmwareRevision[16];
 
 void appBleInit(void)
 {
@@ -161,13 +160,6 @@ void appBleInit(void)
                                               APP_BLE_SYSTEM_ID_SIZE,
                                               systemId);
 
-  sprintf((char *)firmwareRevision, "%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_PATCH);
-  printf("Firmware revision : %s\r\n", firmwareRevision);
-  gecko_cmd_gatt_server_write_attribute_value(gattdb_firmware_rev,
-                                              0,
-                                              strlen((char const *)firmwareRevision),
-                                              firmwareRevision);
-
   sprintf((char *)boardRevision, "A00");
   printf("Board revision    : %s\r\n", boardRevision);
   gecko_cmd_gatt_server_write_attribute_value(gattdb_board_rev,
@@ -192,6 +184,7 @@ void appBleInit(void)
 
   appBleAdvStart();
 
+  diServiceSwVerInit();
   otaServiceInit();
 
   return;

@@ -39,6 +39,9 @@
 #include "imus.h"
 #include "batt.h"
 
+/* uncannier headers */
+#include "di_service.h"
+
 /* Own header */
 #include "app.h"
 
@@ -103,6 +106,7 @@ void appHandleEvents(struct gecko_cmd_packet *evt)
     /* This event indicates the device has started and is ready to receive any command except
      *  Bluetooth-related commands */
     case gecko_evt_system_boot_id:
+      diServiceFwVerInit( &(evt->data.evt_system_boot) );
       appInit(); /* Has to be called first to set up graphics. */
       appCfgResetEvent();
       appBleAdvStart();

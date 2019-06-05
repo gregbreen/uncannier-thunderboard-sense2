@@ -1,10 +1,21 @@
-version: 2
+version: 2.1
 jobs:
-  build:
+  build_and_test:
     docker:
       - image: gregbreen/uncannier-thunderboard:gecko-sdk-suite-v2.5
     steps:
       - checkout
+      - run:
+          name: Inject version information
+          command: |
+            # Set the version to the tag if a tag triggered this build. For untagged builds default the version to 0.0.0
+            if [ -z "$CIRCLE_TAG" ]; then CI_VERSION=0.0.0; else CI_VERSION=$CIRCLE_TAG; fi
+            CI_COMMIT=$(echo $CIRCLE_SHA1 | cut -c -7)
+            FILENAME="./uts-application/uncannier/ci.h"
+            echo "#define CI_VERSION \"$CI_VERSION\"" > $FILENAME
+            echo "#define CI_BUILD $CIRCLE_BUILD_NUM" >> $FILENAME
+            echo "#define CI_COMMIT 0x$CI_COMMIT" >> $FILENAME
+            cat $FILENAME
       - run:
           name: Build the Uncannier Thunderboard Sense 2 bootloader
           command: /opt/SimplicityStudio_v4/studio -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild --launcher.suppressErrors -import uts-bootloader -cleanBuild uts-bootloader/Release
@@ -23,11 +34,13 @@ jobs:
       - run:
           name: Package the build binaries
           command: |
+            # Create a composite version to use in filenames. 0.0.0-buildnum for untagged builds
+            if [ -z "$CIRCLE_TAG" ]; then VERSION=0.0.0-$CIRCLE_BUILD_NUM; else VERSION=$CIRCLE_TAG-$CIRCLE_BUILD_NUM; fi
             cd uts-application/Release
-            mv uts-image.hex uts-image-$CIRCLE_BUILD_NUM.hex
-            mv uts-application.gbl uts-application-$CIRCLE_BUILD_NUM.gbl
-            mv uts-apploader.gbl uts-apploader-$CIRCLE_BUILD_NUM.gbl
-            tar -cvzf uncannier-thunderboard-sense2.tar.gz uts-image-$CIRCLE_BUILD_NUM.hex uts-application-$CIRCLE_BUILD_NUM.gbl uts-apploader-$CIRCLE_BUILD_NUM.gbl
+            mv uts-image.hex uts-image-$VERSION.hex
+            mv uts-application.gbl uts-application-$VERSION.gbl
+            mv uts-apploader.gbl uts-apploader-$VERSION.gbl
+            tar -cvzf uncannier-thunderboard-sense2.tar.gz uts-image-$VERSION.hex uts-application-$VERSION.gbl uts-apploader-$VERSION.gbl
       - store_test_results:
           path: ./JUnit
       - store_artifacts:
@@ -36,4 +49,14 @@ jobs:
       - store_artifacts:
           path: ./uts-application/Test/Coverage
           destination: Coverage
+
+workflows:
+  version: 2
+  # Run the build when any new commits or tags are pushed
+  commit-or-tag:
+    jobs:
+      - build_and_test:
+          filters:
+            tags:
+              only: /.*/
 

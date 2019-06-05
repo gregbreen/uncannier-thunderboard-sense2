@@ -65,10 +65,17 @@
       <properties read="true" read_requirement="mandatory"/>
     </characteristic>
     
+    <!--Software Revision String-->
+    <characteristic id="software_rev" name="Software Revision String" sourceId="org.bluetooth.characteristic.software_revision_string" uuid="2A28">
+      <informativeText>Abstract: The value of this characteristic is a UTF-8 string representing the software revision for the software within the device. </informativeText>
+      <value length="20" type="utf-8" variable_length="false"/>
+      <properties read="true" read_requirement="mandatory"/>
+    </characteristic>
+    
     <!--Firmware Revision String-->
     <characteristic id="firmware_rev" name="Firmware Revision String" sourceId="org.bluetooth.characteristic.firmware_revision_string" uuid="2A26">
       <informativeText>Summary:  The value of this characteristic is a UTF-8 string representing the firmware revision for the firmware within the device.  </informativeText>
-      <value length="5" type="utf-8" variable_length="false">0.1.0</value>
+      <value length="20" type="utf-8" variable_length="false"/>
       <properties read="true" read_requirement="mandatory"/>
     </characteristic>
     

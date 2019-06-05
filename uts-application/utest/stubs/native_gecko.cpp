@@ -72,6 +72,12 @@ struct gecko_msg_gatt_server_send_user_read_response_rsp_t* gecko_cmd_gatt_serve
 struct gecko_msg_gatt_server_write_attribute_value_rsp_t* gecko_cmd_gatt_server_write_attribute_value( uint16 attribute, uint16 offset,
                                                                                                        uint8 value_len, const uint8* value_data )
 {
+    mock().actualCall( "gecko_cmd_gatt_server_write_attribute_value()" )
+            .withParameter( "attribute", attribute )
+            .withParameter( "offset", offset )
+            .withParameter( "value_len", value_len )
+            .withMemoryBufferParameter( "value_data", value_data, value_len );
+
     return &gecko_rsp_msg->data.rsp_gatt_server_write_attribute_value;
 }
 
