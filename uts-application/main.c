@@ -31,7 +31,7 @@
 #include "retargetserial.h"
 
 #include "main.h"
-#include "appl_ver.h"
+#include "ci.h"
 
 #include "native_gecko.h"
 
@@ -75,11 +75,10 @@ int main(void)
   /**************************************************************************/
   init(true);
 
-  printf("\r\n\r\n#### Thunderboard Sense BLE application - %d.%d.%d build %d ####\r\n",
-         APP_VERSION_MAJOR,
-         APP_VERSION_MINOR,
-         APP_VERSION_PATCH,
-         APP_VERSION_BUILD
+  printf("\r\n\r\n#### Thunderboard Sense BLE application %s-%d %07x ####\r\n",
+         CI_VERSION,
+         CI_BUILD,
+         CI_COMMIT
          );
 
   /**************************************************************************/

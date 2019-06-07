@@ -3,10 +3,4 @@
 //
 
 Executing: bgbuild (/opt/SimplicityStudio_v4/developer/sdks/gecko_sdk_suite/v2.5/protocol/bluetooth/bin/bgbuild)
-Standard output
-ALL OK
-
-Error/Warning output
-Warning: Generic Attribute Service should be the first service in GATT database. Otherwise its attribute handles may change when the database is updated in future.
-
 
