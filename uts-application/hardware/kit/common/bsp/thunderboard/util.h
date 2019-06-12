@@ -36,6 +36,7 @@
 #define UTIL_SUPPLY_TYPE_AA         2 /**< The board powered from AA batteries      */
 #define UTIL_SUPPLY_TYPE_AAA        3 /**< The board powered from AAA batteries     */
 #define UTIL_SUPPLY_TYPE_CR2032     4 /**< The board powered from a CR2032 battery  */
+#define UTIL_SUPPLY_TYPE_WSTK       5 /**< The board powered from WSTK VAEM (energy profiling)  */
 
 uint32_t UTIL_init        (void);
 void     UTIL_delay       (uint32_t ms);
