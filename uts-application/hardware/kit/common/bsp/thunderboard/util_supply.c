@@ -219,6 +219,8 @@ void UTIL_supplyProbe(void)
   r = measureSupplyIR(0x00);
   if ( r > 5.0 ) {
     type = UTIL_SUPPLY_TYPE_CR2032;
+  } else if ( (v > 3.20) && (r > 0.5) ) {
+    type = UTIL_SUPPLY_TYPE_WSTK;
   } else if ( (v < 3.20) || (r > 0.5) ) {
     type = UTIL_SUPPLY_TYPE_AAA;
   } else {
@@ -280,15 +282,8 @@ uint8_t UTIL_supplyGetType(void)
  ******************************************************************************/
 bool UTIL_isLowPower(void)
 {
-  bool lp;
-
-  if ( (UTIL_supplyType != UTIL_SUPPLY_TYPE_CR2032) && (UTIL_supplyType != UTIL_SUPPLY_TYPE_UNKNOWN) ) {
-    lp = false;
-  } else {
-    lp = true;
-  }
-
-  return lp;
+  return (UTIL_supplyType == UTIL_SUPPLY_TYPE_CR2032) || (UTIL_supplyType == UTIL_SUPPLY_TYPE_WSTK) ||
+          (UTIL_supplyType == UTIL_SUPPLY_TYPE_UNKNOWN);
 }
 
 /** @} */

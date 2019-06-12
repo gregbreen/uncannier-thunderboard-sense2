@@ -183,6 +183,8 @@ void init(bool radio)
     printf("Dual AAA batteries\r\n");
   } else if ( supplyType == UTIL_SUPPLY_TYPE_CR2032 ) {
     printf("CR2032\r\n");
+  } else if ( supplyType == UTIL_SUPPLY_TYPE_WSTK ) {
+    printf("WSTK (VAEM)\r\n");
   } else {
     printf("Unknown\r\n");
   }
