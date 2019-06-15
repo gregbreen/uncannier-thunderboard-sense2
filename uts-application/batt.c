@@ -88,7 +88,6 @@ static uint8 battBatteryLevel; /* Battery Level */
 /***************************************************************************************************
  * Static Function Declarations
  **************************************************************************************************/
-static uint8_t appHwReadBatteryLevel(void);
 
 static void adcInit(void)
 {
@@ -169,26 +168,22 @@ void battCharStatusChange(uint8_t connection, uint16_t clientConfig)
   /* if the new value of CCC is not 0 (either indication or notification enabled)
    *  start battery level measurement */
   if (clientConfig) {
-    battMeasure(); /* make an initial measurement */
     gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(BATT_IND_TIMEOUT), BATT_SERVICE_TIMER, false);
   } else {
     gecko_cmd_hardware_set_soft_timer(TIMER_STOP, BATT_SERVICE_TIMER, false);
   }
 }
 
-static uint8_t appHwReadBatteryLevel(void)
-{
-  uint32_t voltage = measureBatteryVoltage();
-  uint8_t level = calculateLevel(voltage, battCR2032Model, sizeof(battCR2032Model) / sizeof(VoltageCapacityPair));
-
-  return level;
-}
-
 void battMeasure(void)
 {
-  /* Update battery level based on battery level sensor */
-  battBatteryLevel = appHwReadBatteryLevel();
+  uint32_t voltage = measureBatteryVoltage();
+  battBatteryLevel = calculateLevel(voltage, battCR2032Model, sizeof(battCR2032Model) / sizeof(VoltageCapacityPair));
 
+  printf("Battery level = %d (%ldmV)\r\n", battBatteryLevel, voltage);
+}
+
+void battNotify(void)
+{
   /* Send notification */
   gecko_cmd_gatt_server_send_characteristic_notification(
     conGetConnectionId(), gattdb_batt_measurement, sizeof(battBatteryLevel), &battBatteryLevel);
@@ -196,9 +191,6 @@ void battMeasure(void)
 
 void battRead(void)
 {
-  /* Update battery level based on battery level sensor */
-  battBatteryLevel = appHwReadBatteryLevel();
-  printf("Battery level = %d\r\n", battBatteryLevel);
   /* Send response to read request */
   gecko_cmd_gatt_server_send_user_read_response(conGetConnectionId(), gattdb_batt_measurement, 0,
                                                 sizeof(battBatteryLevel), &battBatteryLevel);

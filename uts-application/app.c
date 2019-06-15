@@ -235,7 +235,7 @@ void appHandleEvents(struct gecko_cmd_packet *evt)
           break;
 
         case BATT_SERVICE_TIMER:
-          battMeasure();
+          battNotify();
           break;
 
         default:
