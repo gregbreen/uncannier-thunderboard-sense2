@@ -47,6 +47,7 @@
 #include "app.h"
 #include "radio.h"
 #include "radio_ble.h"
+#include "batt.h"
 
 #define MIC_SAMPLE_RATE            8000
 #define MIC_SAMPLE_BUFFER_SIZE     2048
@@ -188,6 +189,12 @@ void init(bool radio)
   } else {
     printf("Unknown\r\n");
   }
+
+  // Measure the battery once, soon after boot. We give a short delay
+  // in EM1 mode first, just to drop the load from ~3mA to ~1.5mA.
+  // 1.5mA still causes a little bit of sag, so our measurement is pessimistic.
+  UTIL_delay(100);
+  battMeasure();
 
   /**************************************************************************/
   /* System clock and timer init                                            */
